@@ -8,14 +8,14 @@ export default function NavSidebar() {
           3D Mushing Events
         </h3>
         <nav className="mt-5 sm:mt-0 flex justify-center gap-x-10 lg:flex-col">
-          <Link href="/">
-            <a className="lg:mb-5 text-gray-400 hover:text-white outline-none focus-visible:text-sky-500 focus-visible:underline">
-              Fall Event
+          <Link href="/dotys-dusty-dog-dryland-race">
+            <a className="lg:py-3 lg:border-t lg:border-b lg:border-gray-800 text-gray-300 hover:text-white outline-none focus-visible:text-sky-500 focus-visible:underline">
+              Fall race
             </a>
           </Link>
-          <Link href="/">
-            <a className="text-gray-400 hover:text-white outline-none focus-visible:text-sky-500 focus-visible:underline">
-              Winter Event
+          <Link href="/dotys-dog-days-of-winter-race">
+            <a className="lg:py-3 lg:border-b lg:border-gray-800 text-gray-300 hover:text-white outline-none focus-visible:text-sky-500 focus-visible:underline">
+              Winter race
             </a>
           </Link>
         </nav>

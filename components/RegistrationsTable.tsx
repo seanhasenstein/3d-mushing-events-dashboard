@@ -1,146 +1,88 @@
 import React from 'react';
-import { classNames, formatAge, formatDate, formatGender } from '../utils/misc';
-import useFakeRegistrations from '../hooks/useFakeRegistrations';
-import { Registration } from '../interfaces';
-import { winterEvents } from '../data/events';
-
-type SortButtonProps = {
-  label: string;
-  sortBy: SortBy;
-  activeSortBy: SortBy;
-  sortDirection: SortDirection;
-  setSortBy: React.Dispatch<React.SetStateAction<SortBy>>;
-  setSortDirection: React.Dispatch<React.SetStateAction<SortDirection>>;
-};
-
-function SortButton({
-  label,
-  sortBy,
-  activeSortBy,
-  sortDirection,
-  setSortBy,
-  setSortDirection,
-}: SortButtonProps) {
-  const handleClick = () => {
-    if (sortBy === activeSortBy) {
-      setSortDirection(
-        sortDirection === 'ascending' ? 'descending' : 'ascending'
-      );
-    }
-    setSortBy(sortBy);
-  };
-
-  return (
-    <button
-      type="button"
-      onClick={handleClick}
-      className="inline-flex items-center outline-none focus-visible:text-sky-600 focus-visible:underline"
-    >
-      {label}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className={classNames(
-          'ml-2 h-4 w-4 text-gray-900 rounded',
-          sortBy === activeSortBy
-            ? 'bg-gray-200'
-            : 'bg-bg-transparent text-transparent',
-          sortDirection === 'ascending' ? '' : 'rotate-180'
-        )}
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path
-          fillRule="evenodd"
-          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-          clipRule="evenodd"
-        />
-      </svg>
-    </button>
-  );
-}
-
-type TableProps = {
-  children?: React.ReactNode;
-  className?: string;
-};
-
-function TH({ children = '', className = '' }: TableProps) {
-  return (
-    <th
-      className={classNames(
-        'px-2 first:pl-5 last:pr-5 py-2.5 border-b border-gray-200 text-left text-gray-900 text-sm font-medium first:rounded-tl last:rounded-tr',
-        className
-      )}
-    >
-      {children}
-    </th>
-  );
-}
-
-function TD({ children, className = '' }: TableProps) {
-  return (
-    <td
-      className={classNames(
-        'py-3 px-2 first:pl-5 last:pr-5 group-last:border-b-0 bg-white text-gray-700 text-sm border-b border-gray-200 group-last:first:rounded-bl-md group-last:last:rounded-br-md',
-        className
-      )}
-    >
-      {children}
-    </td>
-  );
-}
+import { formatAge, formatDate, formatGender } from '../utils/misc';
+import { Race, Registration, SortBy, SortDirection } from '../interfaces';
+import SortButton from './TableSortButton';
+import TH from './TableHeaderCell';
+import TD from './TableDataCell';
 
 type Props = {
-  sidebarIsOpen: boolean;
-  setSidebarIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  race: Race;
+  registrations: Registration[] | undefined;
+  setEventTotalsSidebarIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setRegistrationSidebarIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setSidebarRegistration: React.Dispatch<
     React.SetStateAction<Registration | undefined>
   >;
 };
 
-type SortBy = 'date' | 'name' | 'age' | 'gender' | 'events';
-type SortDirection = 'ascending' | 'descending';
-
 export default function RegistrationsTable({
-  setSidebarIsOpen,
+  race,
+  registrations,
+  setEventTotalsSidebarIsOpen,
+  setRegistrationSidebarIsOpen,
   setSidebarRegistration,
 }: Props) {
-  const { registrations } = useFakeRegistrations();
   const [sortBy, setSortBy] = React.useState<SortBy>('date');
   const [sortDirection, setSortDirection] =
     React.useState<SortDirection>('ascending');
 
   const handleViewClick = (id: string) => {
     const registration = registrations?.find(r => r._id === id);
+    if (!registration) return;
     setSidebarRegistration(registration);
-    setSidebarIsOpen(true);
+    setRegistrationSidebarIsOpen(true);
   };
 
   return (
     <div className="relative lg:static px-3">
-      <button
-        type="button"
-        className="absolute top-4 right-4 py-1.5 px-6 flex items-center text-sm font-medium text-gray-700 transition-colors hover:text-black"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="flex-shrink-0 mr-1 h-3.5 w-3.5 text-gray-400"
-          viewBox="0 0 20 20"
-          fill="currentColor"
+      <div className="absolute top-6 right-6 flex">
+        <button
+          type="button"
+          className="pr-4 flex items-center text-sm font-medium text-gray-700 transition-colors hover:text-black outline-none focus-visible:text-sky-600 focus-visible:underline group"
         >
-          <path
-            fillRule="evenodd"
-            d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-            clipRule="evenodd"
-          />
-        </svg>
-        Export to csv
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="flex-shrink-0 mr-1 h-3.5 w-3.5 text-gray-500 group-focus-visible:text-sky-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          </svg>
+          Export to csv
+        </button>
+        <button
+          type="button"
+          onClick={() => setEventTotalsSidebarIsOpen(true)}
+          className="pl-4 flex items-center border-l border-gray-200 text-sm font-medium text-gray-700 transition-colors hover:text-black leading-none outline-none focus-visible:text-sky-600 focus-visible:underline group"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="flex-shrink-0 mr-1 h-3.5 w-3.5 text-gray-500 group-focus-visible:text-sky-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+            />
+          </svg>
+          Event totals
+        </button>
+      </div>
       <div>
         <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">
-          Doty Dog Days of Winter
+          {race.name}
         </h2>
-        <p className="text-gray-700">Sat Feb 12th - Sun Feb 13th, 2022</p>
+        <p className="text-gray-700">{race.dates}</p>
       </div>
       <div className="mt-10 w-full shadow rounded-md border border-gray-200">
         <div className="py-6 px-5 flex flex-col md:flex-row lg:flex-col xl:flex-row justify-between gap-x-4 xl:gap-x-6 border-b border-gray-200">
@@ -206,7 +148,7 @@ export default function RegistrationsTable({
                 className="mt-2 py-2 pr-10 pl-3 sm:px-3 w-full shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm border border-gray-300 rounded-md"
               >
                 <option value="all">All</option>
-                {winterEvents.map(e => (
+                {race.events.map(e => (
                   <option key={e.id} value={e.id}>
                     {e.title}
                   </option>

@@ -3,11 +3,13 @@ import React from 'react';
 export default function useOutsideClickClose(
   open: boolean,
   setOpen: React.Dispatch<React.SetStateAction<boolean>>,
-  ref: React.RefObject<HTMLElement>
+  ref: React.RefObject<HTMLElement>,
+  callback = Function()
 ) {
   React.useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (!ref.current?.contains(e.target as Node)) {
+        callback();
         setOpen(false);
       }
     };
@@ -19,5 +21,5 @@ export default function useOutsideClickClose(
     return () => {
       document.removeEventListener('click', handleClick);
     };
-  }, [open, ref, setOpen]);
+  }, [callback, open, ref, setOpen]);
 }

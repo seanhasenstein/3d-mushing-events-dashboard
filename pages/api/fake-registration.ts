@@ -2,16 +2,19 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { faker } from '@faker-js/faker';
 import { Registration } from '../../interfaces';
 import { createReceiptNumber, requiresGuardian } from '../../utils/misc';
-import { winterEvents } from '../../data/events';
+import { fallRace, winterRace } from '../../data';
+
+export interface Request extends NextApiRequest {
+  query: {
+    event: 'fall' | 'winter';
+  };
+}
 
 type Data = {
   registrations: Registration[];
 };
 
-export default function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Data>
-) {
+export default function handler(req: Request, res: NextApiResponse<Data>) {
   function buildRegistration(index: number): Registration {
     const firstName = faker.name.firstName();
     const lastName = faker.name.lastName();
@@ -19,15 +22,17 @@ export default function handler(
       .between(`${new Date('1-1-1972')}`, `${new Date('1-1-2014')}`)
       .toString();
     const guardian = requiresGuardian(new Date(birthday))
-      ? { firstName: faker.name.firstName(), lastName: faker.name.lastName() }
+      ? `${faker.name.firstName()} ${faker.name.lastName()}`
       : undefined;
     const date = faker.date.past().toString();
+    const events =
+      req.query.event === 'fall' ? fallRace.events : winterRace.events;
     const total = Math.random() * 10000;
 
     return {
       _id: faker.random.alphaNumeric(24),
       registrationId: createReceiptNumber(),
-      eventId: 'winter-2023',
+      eventId: `${req.query.event}-2022`,
       firstName,
       lastName,
       birthday,
@@ -37,7 +42,7 @@ export default function handler(
       phone: faker.phone.phoneNumber('##########'),
       city: faker.address.city(),
       state: faker.address.stateAbbr(),
-      events: [winterEvents[index]],
+      events: [events[index]],
       total,
       stripeFee: Math.ceil(total) * 0.029 + 30,
       createdAt: date,

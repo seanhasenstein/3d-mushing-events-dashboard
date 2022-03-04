@@ -7,6 +7,13 @@ export interface Event {
   notes: string[];
 }
 
+export interface Race {
+  id: string;
+  name: string;
+  dates: string;
+  events: Event[];
+}
+
 export type Gender = 'male' | 'female';
 
 export interface Registration {
@@ -16,10 +23,7 @@ export interface Registration {
   firstName: string;
   lastName: string;
   birthday: string;
-  guardian?: {
-    firstName: string;
-    lastName: string;
-  };
+  guardian?: string;
   gender: Gender;
   email: string;
   phone: string;
@@ -31,6 +35,14 @@ export interface Registration {
   createdAt: string;
   updatedAt: string;
 }
+
+export type TableProps = {
+  children?: React.ReactNode;
+  className?: string;
+};
+
+export type SortBy = 'date' | 'name' | 'age' | 'gender' | 'events';
+export type SortDirection = 'ascending' | 'descending';
 
 export interface Request extends NextApiRequest {
   db: Db;
