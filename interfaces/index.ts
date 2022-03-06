@@ -1,49 +1,62 @@
 import { NextApiRequest } from 'next';
 import { Db } from 'mongodb';
 
-export interface Event {
-  id: number;
-  title: string;
-  notes: string[];
-}
-
 export interface Race {
   id: string;
   name: string;
-  dates: string;
-  events: Event[];
+  notes: string[];
+  total?: number;
 }
-
-export type Gender = 'male' | 'female';
 
 export interface Registration {
   _id: string;
   registrationId: string;
-  eventId: string;
   firstName: string;
   lastName: string;
   birthday: string;
   guardian?: string;
-  gender: Gender;
+  gender: 'male' | 'female';
   email: string;
   phone: string;
   city: string;
   state: string;
-  events: Event[];
-  total: number;
-  stripeFee: number;
+  races: Race[];
+  summary: {
+    trailFee: number;
+    ISDRAFee?: number;
+    subtotal: number;
+    total: number;
+    stripeFee: number;
+  };
   createdAt: string;
   updatedAt: string;
 }
+
+export interface Event {
+  _id: string;
+  name: string;
+  dates: string;
+  races: Race[];
+  raceTotals: Race[];
+  registrations: Registration[];
+}
+
+export type Gender = 'all' | 'female' | 'male';
+
+export type SortBy =
+  | 'createdAt'
+  | 'lastName'
+  | 'birthday'
+  | 'gender'
+  | 'events';
+
+export type SortDirection = 'ascending' | 'descending';
 
 export type TableProps = {
   children?: React.ReactNode;
   className?: string;
 };
 
-export type SortBy = 'date' | 'name' | 'age' | 'gender' | 'events';
-export type SortDirection = 'ascending' | 'descending';
-
-export interface Request extends NextApiRequest {
+export interface ExtendRequest extends NextApiRequest {
   db: Db;
 }

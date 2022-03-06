@@ -1,13 +1,13 @@
 import React from 'react';
+import { Event, Gender, Registration } from '../interfaces';
 import { formatAge, formatDate, formatGender } from '../utils/misc';
-import { Race, Registration, SortBy, SortDirection } from '../interfaces';
+import useRegistrationFilter from '../hooks/useRegistrationFilter';
 import SortButton from './TableSortButton';
 import TH from './TableHeaderCell';
 import TD from './TableDataCell';
 
 type Props = {
-  race: Race;
-  registrations: Registration[] | undefined;
+  event: Event;
   setEventTotalsSidebarIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setRegistrationSidebarIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setSidebarRegistration: React.Dispatch<
@@ -16,18 +16,27 @@ type Props = {
 };
 
 export default function RegistrationsTable({
-  race,
-  registrations,
+  event,
   setEventTotalsSidebarIsOpen,
   setRegistrationSidebarIsOpen,
   setSidebarRegistration,
 }: Props) {
-  const [sortBy, setSortBy] = React.useState<SortBy>('date');
-  const [sortDirection, setSortDirection] =
-    React.useState<SortDirection>('ascending');
+  const {
+    registrations,
+    gender,
+    setGender,
+    query,
+    setQuery,
+    raceId,
+    setRaceId,
+    sortBy,
+    setSortBy,
+    sortDirection,
+    setSortDirection,
+  } = useRegistrationFilter(event.registrations);
 
   const handleViewClick = (id: string) => {
-    const registration = registrations?.find(r => r._id === id);
+    const registration = registrations.find(r => r._id === id);
     if (!registration) return;
     setSidebarRegistration(registration);
     setRegistrationSidebarIsOpen(true);
@@ -75,14 +84,14 @@ export default function RegistrationsTable({
               d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
             />
           </svg>
-          Event totals
+          Race totals
         </button>
       </div>
       <div>
         <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">
-          {race.name}
+          {event.name}
         </h2>
-        <p className="text-gray-700">{race.dates}</p>
+        <p className="text-gray-700">{event.dates}</p>
       </div>
       <div className="mt-10 w-full shadow rounded-md border border-gray-200">
         <div className="py-6 px-5 flex flex-col md:flex-row lg:flex-col xl:flex-row justify-between gap-x-4 xl:gap-x-6 border-b border-gray-200">
@@ -113,6 +122,8 @@ export default function RegistrationsTable({
                 name="search"
                 id="search"
                 placeholder="Search"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
                 className="py-2 pr-3 pl-9 w-full shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm border border-gray-300 rounded-md"
               />
             </div>
@@ -128,6 +139,8 @@ export default function RegistrationsTable({
               <select
                 name="gender"
                 id="gender"
+                value={gender}
+                onChange={e => setGender(e.target.value as Gender)}
                 className="mt-2 py-2 px-3 w-full shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm border border-gray-300 rounded-md"
               >
                 <option value="all">All</option>
@@ -140,17 +153,19 @@ export default function RegistrationsTable({
                 htmlFor="events"
                 className="text-sm font-medium text-gray-800"
               >
-                Event
+                Race
               </label>
               <select
-                name="event"
-                id="event"
+                name="race"
+                id="race"
+                value={raceId}
+                onChange={e => setRaceId(e.target.value)}
                 className="mt-2 py-2 pr-10 pl-3 sm:px-3 w-full shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm border border-gray-300 rounded-md"
               >
                 <option value="all">All</option>
-                {race.events.map(e => (
-                  <option key={e.id} value={e.id}>
-                    {e.title}
+                {event.races.map(r => (
+                  <option key={r.id} value={r.id}>
+                    {r.name}
                   </option>
                 ))}
               </select>
@@ -164,7 +179,7 @@ export default function RegistrationsTable({
                 <TH>
                   <SortButton
                     label="Date"
-                    sortBy="date"
+                    sortBy="createdAt"
                     activeSortBy={sortBy}
                     sortDirection={sortDirection}
                     setSortBy={setSortBy}
@@ -174,7 +189,7 @@ export default function RegistrationsTable({
                 <TH>
                   <SortButton
                     label="Name"
-                    sortBy="name"
+                    sortBy="lastName"
                     activeSortBy={sortBy}
                     sortDirection={sortDirection}
                     setSortBy={setSortBy}
@@ -184,7 +199,7 @@ export default function RegistrationsTable({
                 <TH className="pl-6 text-center">
                   <SortButton
                     label="Age"
-                    sortBy="age"
+                    sortBy="birthday"
                     activeSortBy={sortBy}
                     sortDirection={sortDirection}
                     setSortBy={setSortBy}
@@ -215,148 +230,119 @@ export default function RegistrationsTable({
               </tr>
             </thead>
             <tbody>
-              {registrations?.map(r => (
-                <tr key={r._id} className="group">
-                  <TD>{formatDate(r.createdAt, 'MM/dd/yyyy')}</TD>
-                  <TD>
-                    <div>
+              {registrations.length > 0 ? (
+                registrations.map(r => (
+                  <tr key={r._id} className="group">
+                    <TD>{formatDate(r.createdAt, 'MM/dd/yyyy')}</TD>
+                    <TD>
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => handleViewClick(r._id)}
+                          className="font-medium text-black text-left hover:underline outline-none focus-visible:text-sky-600 focus-visible:underline"
+                        >
+                          {r.firstName} {r.lastName}
+                        </button>
+                        <p className="text-gray-600">
+                          {r.city}, {r.state}
+                        </p>
+                      </div>
+                    </TD>
+                    <TD className="text-center">{formatAge(r.birthday)}</TD>
+                    <TD className="text-center">{formatGender(r.gender)}</TD>
+                    <TD>
+                      {r.races.map(r => (
+                        <p
+                          key={r.id}
+                          className="mt-2 xl:mt-1 first:mt-0 text-[0.8125rem] leading-snug"
+                        >
+                          {r.name}
+                        </p>
+                      ))}
+                    </TD>
+                    <TD className="text-right">
                       <button
                         type="button"
                         onClick={() => handleViewClick(r._id)}
-                        className="font-medium text-black text-left hover:underline outline-none focus-visible:text-sky-600 focus-visible:underline"
+                        className="py-0.5 px-2.5 text-sky-600 font-medium rounded-full transition-all hover:bg-sky-100 hover:text-sky-700 outline-none focus-visible:underline"
                       >
-                        {r.firstName} {r.lastName}
+                        View
                       </button>
-                      <p className="text-gray-600">
-                        {r.city}, {r.state}
-                      </p>
-                    </div>
-                  </TD>
-                  <TD className="text-center">{formatAge(r.birthday)}</TD>
-                  <TD className="text-center">{formatGender(r.gender)}</TD>
-                  <TD>
-                    {r.events.map(e => (
-                      <p
-                        key={e.id}
-                        className="mt-2 xl:mt-1 first:mt-0 text-[0.8125rem] leading-snug"
-                      >
-                        {e.title}
-                      </p>
-                    ))}
-                  </TD>
-                  <TD>
-                    <button
-                      type="button"
-                      onClick={() => handleViewClick(r._id)}
-                      className="text-sky-600 font-medium transition-all hover:text-sky-900 outline-none focus-visible:underline"
-                    >
-                      View
-                    </button>
-                  </TD>
+                    </TD>
+                  </tr>
+                ))
+              ) : (
+                <tr className="group">
+                  <TD className="font-medium">No results found.</TD>
+                  <TD />
+                  <TD />
+                  <TD />
+                  <TD />
+                  <TD />
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
         <div className="md:hidden">
-          {registrations?.map(r => (
-            <button
-              key={r._id}
-              onClick={() => handleViewClick(r._id)}
-              className="py-4 px-6 flex justify-between items-center w-full bg-white border-b border-gray-200 text-left"
-            >
-              <div className="text-sm text-gray-900">
-                <p className="font-medium">
-                  {r.firstName} {r.lastName}
-                </p>
-                <p className="mt-0.5">
-                  {r.city}, {r.state}
-                </p>
-                <p className="mt-0.5">
-                  <span className="capitalize">{r.gender}</span> -{' '}
-                  {formatAge(r.birthday)} years old
-                </p>
-                <div className="mt-0.5">
-                  {r.events.map(e => (
-                    <p key={e.id} className="mt-2 first:mt-0 leading-snug">
-                      {e.title}
-                    </p>
-                  ))}
+          {registrations.length > 0 ? (
+            registrations.map(r => (
+              <button
+                key={r._id}
+                onClick={() => handleViewClick(r._id)}
+                className="py-4 px-6 flex justify-between items-center w-full bg-white border-b border-gray-200 text-left last:rounded-b-md"
+              >
+                <div className="text-sm text-gray-900">
+                  <p className="font-medium">
+                    {r.firstName} {r.lastName}
+                  </p>
+                  <p className="mt-0.5">
+                    {r.city}, {r.state}
+                  </p>
+                  <p className="mt-0.5">
+                    <span className="capitalize">{r.gender}</span> -{' '}
+                    {formatAge(r.birthday)} years old
+                  </p>
+                  <div className="mt-0.5">
+                    {r.races.map(r => (
+                      <p key={r.id} className="mt-2 first:mt-0 leading-snug">
+                        {r.name}
+                      </p>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 text-gray-400"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="sr-only">View registration</span>
-              </div>
-            </button>
-          ))}
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 text-gray-400"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span className="sr-only">View registration</span>
+                </div>
+              </button>
+            ))
+          ) : (
+            <p className="py-4 px-5 text-sm text-gray-900 font-medium">
+              No results found.
+            </p>
+          )}
         </div>
       </div>
-      <div className="mt-1 mb-2 py-5 flex justify-between items-center">
-        <div>
-          <p className="text-sm text-gray-700">Showing 1 to 10 of 97 results</p>
+      {registrations.length > 0 && (
+        <div className="mt-1 mb-2 py-5">
+          <p className="text-sm text-gray-700">
+            Showing 1 to {registrations.length} of {registrations.length}{' '}
+            results
+          </p>
         </div>
-        <div className="flex items-center shadow-sm">
-          <button className="h-9 w-9 inline-flex justify-center items-center bg-white border border-gray-300 rounded-l-md hover:text-black hover:border-gray-400/75 hover:z-50 focus:z-50">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-3.5 w-3.5 text-gray-600"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={3}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </button>
-          <button className="-ml-px h-9 w-9 inline-flex justify-center items-center text-gray-600 border border-gray-300 text-sm bg-gray-200/75 focus:z-50">
-            1
-          </button>
-          <button className="-ml-px h-9 w-9 inline-flex justify-center items-center text-gray-600 border border-gray-300 text-sm bg-white hover:text-black hover:border-gray-400/75 hover:z-50 focus:z-50">
-            2
-          </button>
-          <div className="-ml-px h-9 w-9 inline-flex justify-center items-center text-gray-600 border border-gray-300 text-sm bg-white">
-            ...
-          </div>
-          <button className="-ml-px h-9 w-9 inline-flex justify-center items-center text-gray-600 border border-gray-300 text-sm bg-white hover:text-black hover:border-gray-400/75 hover:z-50 focus:z-50">
-            6
-          </button>
-          <button className="-ml-px h-9 w-9 inline-flex justify-center items-center text-gray-600 border border-gray-300 text-sm bg-white hover:text-black hover:border-gray-400/75 hover:z-50 focus:z-50">
-            7
-          </button>
-          <button className="-ml-px h-9 w-9 inline-flex justify-center items-center bg-white border border-gray-300 rounded-r-md hover:text-black hover:border-gray-400/75 hover:z-50 focus:z-50">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-3.5 w-3.5 text-gray-600"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={3}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

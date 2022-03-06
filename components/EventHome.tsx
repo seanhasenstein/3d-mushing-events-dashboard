@@ -1,15 +1,14 @@
 import React from 'react';
-import { Race, Registration } from '../interfaces';
+import { Event, Registration } from '../interfaces';
 import RegistrationsTable from './RegistrationsTable';
 import RegistrationSidebar from './RegistrationSidebar';
 import EventTotalsSidebar from './EventTotalsSidebar';
 
 type Props = {
-  race: Race;
-  registrations: Registration[] | undefined;
+  event: Event;
 };
 
-export default function EventHome({ race, registrations }: Props) {
+export default function EventHome({ event }: Props) {
   const [eventTotalsSidebarIsOpen, setEventTotalsSidebarIsOpen] =
     React.useState(false);
   const [registrationSidebarIsOpen, setRegistrationSidebarIsOpen] =
@@ -20,20 +19,19 @@ export default function EventHome({ race, registrations }: Props) {
   return (
     <>
       <RegistrationsTable
-        race={race}
-        registrations={registrations}
+        event={event}
         setEventTotalsSidebarIsOpen={setEventTotalsSidebarIsOpen}
         setRegistrationSidebarIsOpen={setRegistrationSidebarIsOpen}
         setSidebarRegistration={setSidebarRegistration}
       />
       <RegistrationSidebar
-        events={race.events}
+        races={event.races}
         isOpen={registrationSidebarIsOpen}
         setIsOpen={setRegistrationSidebarIsOpen}
         registration={sidebarRegistration}
       />
       <EventTotalsSidebar
-        events={race.events}
+        raceTotals={event.raceTotals}
         isOpen={eventTotalsSidebarIsOpen}
         setIsOpen={setEventTotalsSidebarIsOpen}
       />

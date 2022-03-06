@@ -2,16 +2,16 @@ import React from 'react';
 import { classNames } from '../utils/misc';
 import useEscapeKeydownClose from '../hooks/useEscapeKeydownClose';
 import useOutsideClickClose from '../hooks/useOutsideClickClose';
-import { Event } from '../interfaces';
+import { Race } from '../interfaces';
 
 type Props = {
-  events: Event[];
+  raceTotals: Race[];
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function EventTotalsSidebar({
-  events,
+  raceTotals,
   isOpen,
   setIsOpen,
 }: Props) {
@@ -30,8 +30,8 @@ export default function EventTotalsSidebar({
       />
       <div
         className={classNames(
-          'py-8 px-6 xxs:px-10 absolute max-w-md bg-white border border-gray-200 shadow-lg lg:rounded-md transition-opacity',
-          isOpen ? 'top-0 right-0 w-full lg:top-14 lg:right-4' : 'hidden'
+          'py-8 px-6 xxs:px-12 absolute top-0 right-0 max-w-lg bg-white border border-gray-200 shadow-lg transition-all duration-300 ease-linear',
+          isOpen ? 'translate-x-0' : 'translate-x-full hidden'
         )}
       >
         <div ref={sidebarRef} className={''}>
@@ -56,17 +56,17 @@ export default function EventTotalsSidebar({
           </button>
           <div>
             <p className="text-lg font-semibold text-gray-900">
-              Total participants per event
+              Race participant totals
             </p>
           </div>
           <div className="mt-4">
-            {events.map(e => (
+            {raceTotals.map(r => (
               <div
-                key={e.id}
-                className="py-2 flex justify-between items-center gap-x-6 text-sm text-gray-900 border-b first:border-t border-gray-200"
+                key={r.id}
+                className="py-2.5 flex justify-between items-center gap-x-6 text-sm text-gray-900 border-b first:border-t border-gray-200"
               >
-                <p>{e.title}</p>
-                <p>1</p>
+                <p>{r.name}</p>
+                <p>{r.total}</p>
               </div>
             ))}
           </div>

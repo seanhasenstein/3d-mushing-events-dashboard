@@ -8,18 +8,18 @@ import {
 } from '../utils/misc';
 import useEscapeKeydownClose from '../hooks/useEscapeKeydownClose';
 import useOutsideClickClose from '../hooks/useOutsideClickClose';
-import { Event, Registration } from '../interfaces';
+import { Race, Registration } from '../interfaces';
 import UpdateRegistration from './UpdateRegistration';
 
 type Props = {
-  events: Event[];
+  races: Race[];
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   registration: Registration | undefined;
 };
 
 export default function RegistrationSidebar({
-  events,
+  races,
   isOpen,
   setIsOpen,
   registration,
@@ -93,7 +93,7 @@ export default function RegistrationSidebar({
             </h3>
             {updateActive && registration ? (
               <UpdateRegistration
-                events={events}
+                races={races}
                 registration={registration}
                 isOpen={isOpen}
               />
@@ -152,30 +152,54 @@ export default function RegistrationSidebar({
                 )}
                 <div className="mt-6 pt-6 border-t border-gray-200">
                   <h3 className="font-medium tracking-tight">Events</h3>
-                  {registration?.events.map(e => (
+                  {registration?.races.map(r => (
                     <p
-                      key={e.id}
+                      key={r.id}
                       className="mt-2 text-sm text-gray-900 leading-snug"
                     >
-                      {e.title}
+                      {r.name}
                     </p>
                   ))}
                 </div>
                 <div className="mt-6 pt-6 border-t border-gray-200">
                   <h3 className="mb-1.5 font-medium tracking-tight">
-                    Payment details
+                    Payment summary
                   </h3>
+                  <div className="flex">
+                    <p className="w-24 text-sm text-gray-500">Subtotal:</p>
+                    <p className="mt-0.5 text-sm text-gray-900">
+                      {registration &&
+                        formatToMoney(registration.summary.subtotal, true)}
+                    </p>
+                  </div>
+                  <div className="flex">
+                    <p className="w-24 text-sm text-gray-500">Trail fee:</p>
+                    <p className="mt-0.5 text-sm text-gray-900">
+                      {registration &&
+                        formatToMoney(registration.summary.trailFee, true)}
+                    </p>
+                  </div>
+                  {registration?.summary.ISDRAFee && (
+                    <div className="flex">
+                      <p className="w-24 text-sm text-gray-500">ISDRA fee:</p>
+                      <p className="mt-0.5 text-sm text-gray-900">
+                        {registration &&
+                          formatToMoney(registration.summary.ISDRAFee, true)}
+                      </p>
+                    </div>
+                  )}
                   <div className="flex">
                     <p className="w-24 text-sm text-gray-500">Total:</p>
                     <p className="mt-0.5 text-sm text-gray-900">
-                      {registration && formatToMoney(registration.total, true)}
+                      {registration &&
+                        formatToMoney(registration.summary.total, true)}
                     </p>
                   </div>
                   <div className="flex">
                     <p className="w-24 text-sm text-gray-500">Stripe Fee:</p>
                     <p className="mt-0.5 text-sm text-gray-900">
                       {registration &&
-                        formatToMoney(registration.stripeFee, true)}
+                        formatToMoney(registration.summary.stripeFee, true)}
                     </p>
                   </div>
                   <div className="flex">
@@ -183,7 +207,8 @@ export default function RegistrationSidebar({
                     <p className="mt-0.5 text-sm text-gray-900">
                       {registration &&
                         formatToMoney(
-                          registration.total - registration.stripeFee,
+                          registration.summary.total -
+                            registration.summary.stripeFee,
                           true
                         )}
                     </p>

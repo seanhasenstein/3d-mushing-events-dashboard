@@ -7,6 +7,25 @@ export function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
+const ALPHA_NUM =
+  '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+export function createId(prefix?: string | false, len = 14) {
+  const rnd = crypto.randomBytes(len);
+  const value = new Array(len);
+  const charsLength = ALPHA_NUM.length;
+
+  for (let i = 0; i < len; i++) {
+    value[i] = ALPHA_NUM[rnd[i] % charsLength];
+  }
+
+  const id = value.join('');
+
+  if (prefix) return `${prefix}_${id}`;
+
+  return id;
+}
+
 const NUM = '0123456789';
 
 export function createReceiptNumber() {

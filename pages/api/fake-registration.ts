@@ -25,14 +25,16 @@ export default function handler(req: Request, res: NextApiResponse<Data>) {
       ? `${faker.name.firstName()} ${faker.name.lastName()}`
       : undefined;
     const date = faker.date.past().toString();
-    const events =
-      req.query.event === 'fall' ? fallRace.events : winterRace.events;
-    const total = Math.random() * 10000;
+    const races =
+      req.query.event === 'fall' ? fallRace.races : winterRace.races;
+    const trailFee = 1400;
+    const ISDRAFee = 600;
+    const subtotal = 7500 * races.length;
+    const total = trailFee + ISDRAFee + subtotal;
 
     return {
       _id: faker.random.alphaNumeric(24),
       registrationId: createReceiptNumber(),
-      eventId: `${req.query.event}-2022`,
       firstName,
       lastName,
       birthday,
@@ -42,9 +44,14 @@ export default function handler(req: Request, res: NextApiResponse<Data>) {
       phone: faker.phone.phoneNumber('##########'),
       city: faker.address.city(),
       state: faker.address.stateAbbr(),
-      events: [events[index]],
-      total,
-      stripeFee: Math.ceil(total) * 0.029 + 30,
+      races: [races[index]],
+      summary: {
+        subtotal,
+        trailFee,
+        ISDRAFee,
+        total,
+        stripeFee: Math.ceil(total) * 0.029 + 30,
+      },
       createdAt: date,
       updatedAt: date,
     };

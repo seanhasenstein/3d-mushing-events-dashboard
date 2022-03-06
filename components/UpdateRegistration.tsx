@@ -1,16 +1,16 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { Event, Registration } from '../interfaces';
+import { Race, Registration } from '../interfaces';
 import { formatPhoneNumber, requiresGuardian, stateList } from '../utils/misc';
 
 type Props = {
-  events: Event[];
+  races: Race[];
   isOpen: boolean;
   registration: Registration;
 };
 
 export default function UpdateRegistration({
-  events,
+  races,
   isOpen,
   registration,
 }: Props) {
@@ -18,8 +18,12 @@ export default function UpdateRegistration({
     const phone = formatPhoneNumber(registration.phone);
     const birthday = format(new Date(registration.birthday), 'yyyy-MM-dd');
     const guardian = registration.guardian || '';
-    const total = Math.round(registration.total) / 100;
+    const total = Math.round(registration.summary.total) / 100;
     return { ...registration, phone, birthday, guardian, total };
+  });
+
+  React.useEffect(() => {
+    console.log(values.races);
   });
 
   React.useEffect(() => {
@@ -40,11 +44,11 @@ export default function UpdateRegistration({
   };
 
   const handleEventChange = (newId: string, index: number) => {
-    const newEvent = events.find(e => e.id === Number(newId));
-    if (!newEvent) return;
-    const eventsCopy = [...values.events];
-    eventsCopy.splice(index, 1, newEvent);
-    setValues({ ...values, events: eventsCopy });
+    const newRace = races.find(r => r.id === newId);
+    if (!newRace) return;
+    const racesCopy = [...values.races];
+    racesCopy.splice(index, 1, newRace);
+    setValues({ ...values, races: racesCopy });
   };
 
   const handleRemoveEventClick = (
@@ -52,9 +56,9 @@ export default function UpdateRegistration({
     index: number
   ) => {
     e.stopPropagation();
-    const events = [...values.events];
-    events.splice(index, 1);
-    setValues({ ...values, events });
+    const updatedRaces = [...values.races];
+    updatedRaces.splice(index, 1);
+    setValues({ ...values, races: updatedRaces });
   };
 
   return (
@@ -220,20 +224,20 @@ export default function UpdateRegistration({
       )}
       <div className="mt-6 pt-6 border-t border-gray-200">
         <h3 className="font-medium tracking-tight">Events</h3>
-        {values.events.map((e, i) => (
-          <div key={e.id} className="mt-1.5 flex items-center gap-x-1">
+        {values.races.map((r, i) => (
+          <div key={r.id} className="mt-1.5 flex items-center gap-x-1">
             <select
               name={`event-${i}`}
               id={`event-${i}`}
-              value={e.id}
+              value={r.id}
               onChange={event => handleEventChange(event.target.value, i)}
-              title={e.title}
+              title={r.name}
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-1.5 pl-3 pr-8 truncate focus:outline-none focus:ring-1 focus:ring-sky-700 focus:border-sky-700 sm:text-sm"
             >
               <option value="9999">Select an event</option>
-              {events.map(we => (
-                <option key={we.id} value={we.id}>
-                  {we.title}
+              {races.map(r => (
+                <option key={r.id} value={r.id}>
+                  {r.name}
                 </option>
               ))}
             </select>
@@ -264,9 +268,9 @@ export default function UpdateRegistration({
             onClick={() =>
               setValues({
                 ...values,
-                events: [
-                  ...values.events,
-                  { id: 9999, title: 'Select an event', notes: [] },
+                races: [
+                  ...values.races,
+                  { id: '9999', name: 'Select an event', notes: [] },
                 ],
               })
             }
@@ -284,7 +288,7 @@ export default function UpdateRegistration({
                 clipRule="evenodd"
               />
             </svg>
-            Add {values.events.length > 0 ? 'another' : 'an'} event
+            Add {values.races.length > 0 ? 'another' : 'an'} event
           </button>
         </div>
       </div>

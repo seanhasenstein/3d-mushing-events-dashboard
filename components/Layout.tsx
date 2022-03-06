@@ -7,7 +7,7 @@ type Props = {
 
 export default function Layout({ children }: Props) {
   return (
-    <div className="relative overflow-x-hidden">
+    <div className="overflow-x-hidden">
       <Head>
         <title>Dashboard | 3D Mushing Events</title>
         <link rel="icon" href="/favicon.ico" />
