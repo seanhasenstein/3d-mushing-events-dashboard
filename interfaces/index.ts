@@ -35,7 +35,7 @@ export interface Registration {
 export interface Event {
   _id: string;
   name: string;
-  dates: string;
+  dates: string[];
   races: Race[];
   raceTotals: Race[];
   registrations: Registration[];

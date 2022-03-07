@@ -4,12 +4,14 @@ import { Race, Registration } from '../interfaces';
 import { formatPhoneNumber, requiresGuardian, stateList } from '../utils/misc';
 
 type Props = {
+  eventDates: string[];
   races: Race[];
   isOpen: boolean;
   registration: Registration;
 };
 
 export default function UpdateRegistration({
+  eventDates,
   races,
   isOpen,
   registration,
@@ -20,10 +22,6 @@ export default function UpdateRegistration({
     const guardian = registration.guardian || '';
     const total = Math.round(registration.summary.total) / 100;
     return { ...registration, phone, birthday, guardian, total };
-  });
-
-  React.useEffect(() => {
-    console.log(values.races);
   });
 
   React.useEffect(() => {
@@ -204,7 +202,7 @@ export default function UpdateRegistration({
           />
         </div>
       </div>
-      {requiresGuardian(new Date(values.birthday)) && (
+      {requiresGuardian(values.birthday, eventDates[0]) && (
         <div className="mt-4">
           <label
             htmlFor="guardian"

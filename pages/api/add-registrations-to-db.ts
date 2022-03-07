@@ -63,7 +63,10 @@ const handler = nc<Request, NextApiResponse>()
       const birthday = faker.date
         .between(`${new Date('1-1-1972')}`, `${new Date('1-1-2014')}`)
         .toString();
-      const guardian = requiresGuardian(new Date(birthday))
+      const guardian = requiresGuardian(
+        birthday,
+        req.query.event === 'fall' ? fallEvent?.dates[0] : winterEvent?.dates[0]
+      )
         ? `${faker.name.firstName()} ${faker.name.lastName()}`
         : undefined;
       const date = faker.date.past().toString();

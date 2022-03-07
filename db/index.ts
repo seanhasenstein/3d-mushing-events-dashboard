@@ -1,4 +1,5 @@
 import { mongoClientPromise } from './connect';
+import * as event from './event';
 import * as registration from './registration';
 
 async function connectToDb() {
@@ -6,4 +7,4 @@ async function connectToDb() {
   return client.db();
 }
 
-export { connectToDb, registration };
+export { connectToDb, event, registration };

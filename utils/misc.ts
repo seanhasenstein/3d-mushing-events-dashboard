@@ -44,9 +44,8 @@ export function createReceiptNumber() {
   return value.join('');
 }
 
-export function formatAge(dateString: string) {
-  const birthday = new Date(dateString);
-  const age = differenceInYears(new Date(), birthday);
+export function formatAge(birthday: string, eventDate: string) {
+  const age = differenceInYears(new Date(eventDate), new Date(birthday));
   return age;
 }
 
@@ -89,8 +88,18 @@ export function formatPhoneNumber(input: string) {
     .join('');
 }
 
-export function requiresGuardian(birthday: Date) {
-  return formatAge(`${birthday}`) < 18;
+export function requiresGuardian(birthday: string, eventDate: string) {
+  return formatAge(birthday, eventDate) < 18;
+}
+
+export function slugify(input: string) {
+  let result = input;
+  result = result.trim().toLowerCase().replace(/\s+/g, '-');
+  result = result.replace(/[^0-9a-z-]/g, '');
+  result = result.replace(/^-+|-+(?=-|$)/g, '');
+  result = result.replace(/^-/, '');
+  result = result.replace(/-$/, '');
+  return result;
 }
 
 export const stateList = [

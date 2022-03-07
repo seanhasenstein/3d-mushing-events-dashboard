@@ -12,6 +12,7 @@ import { Race, Registration } from '../interfaces';
 import UpdateRegistration from './UpdateRegistration';
 
 type Props = {
+  eventDates: string[];
   races: Race[];
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,6 +20,7 @@ type Props = {
 };
 
 export default function RegistrationSidebar({
+  eventDates,
   races,
   isOpen,
   setIsOpen,
@@ -58,6 +60,7 @@ export default function RegistrationSidebar({
           'fixed top-0 right-0 h-screen max-w-md 2xl:max-w-lg w-full bg-white shadow-lg shadow-black/20 transition-all duration-300 ease-linear',
           isOpen ? 'translate-x-0' : 'translate-x-full'
         )}
+        aria-hidden={!isOpen}
       >
         <div className="py-8 px-6 xxs:px-10">
           <button
@@ -93,6 +96,7 @@ export default function RegistrationSidebar({
             </h3>
             {updateActive && registration ? (
               <UpdateRegistration
+                eventDates={eventDates}
                 races={races}
                 registration={registration}
                 isOpen={isOpen}
@@ -139,7 +143,8 @@ export default function RegistrationSidebar({
                 <div className="flex">
                   <p className="w-20 text-sm text-gray-500">Age:</p>
                   <p className="mt-0.5 text-sm text-gray-900">
-                    {registration && formatAge(registration.birthday)}
+                    {registration &&
+                      formatAge(registration.birthday, eventDates[0])}
                   </p>
                 </div>
                 {registration?.guardian && (

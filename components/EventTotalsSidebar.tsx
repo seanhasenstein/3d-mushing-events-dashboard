@@ -19,6 +19,16 @@ export default function EventTotalsSidebar({
   useOutsideClickClose(isOpen, setIsOpen, sidebarRef);
   useEscapeKeydownClose(isOpen, setIsOpen);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.body.style.overflow = 'inherit';
+    };
+  }, [isOpen]);
+
   return (
     <>
       <div
@@ -30,11 +40,12 @@ export default function EventTotalsSidebar({
       />
       <div
         className={classNames(
-          'py-8 px-6 xxs:px-12 absolute top-0 right-0 max-w-lg bg-white border border-gray-200 shadow-lg transition-all duration-300 ease-linear',
-          isOpen ? 'translate-x-0' : 'translate-x-full hidden'
+          'py-8 px-6 xxs:px-12 fixed top-0 right-0 max-w-lg h-screen overflow-y-auto bg-white border border-gray-200 shadow-lg transition-all duration-300 ease-linear',
+          isOpen ? 'translate-x-0' : 'translate-x-full'
         )}
+        aria-hidden={!isOpen}
       >
-        <div ref={sidebarRef} className={''}>
+        <div ref={sidebarRef}>
           <button
             type="button"
             onClick={() => setIsOpen(false)}

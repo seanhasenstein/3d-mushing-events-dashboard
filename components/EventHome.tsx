@@ -25,6 +25,7 @@ export default function EventHome({ event }: Props) {
         setSidebarRegistration={setSidebarRegistration}
       />
       <RegistrationSidebar
+        eventDates={event.dates}
         races={event.races}
         isOpen={registrationSidebarIsOpen}
         setIsOpen={setRegistrationSidebarIsOpen}

@@ -21,7 +21,7 @@ export default function handler(req: Request, res: NextApiResponse<Data>) {
     const birthday = faker.date
       .between(`${new Date('1-1-1972')}`, `${new Date('1-1-2014')}`)
       .toString();
-    const guardian = requiresGuardian(new Date(birthday))
+    const guardian = requiresGuardian(birthday, `${new Date()}`)
       ? `${faker.name.firstName()} ${faker.name.lastName()}`
       : undefined;
     const date = faker.date.past().toString();

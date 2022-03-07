@@ -1,6 +1,7 @@
 import React from 'react';
+import { format } from 'date-fns';
 import { Event, Gender, Registration } from '../interfaces';
-import { formatAge, formatDate, formatGender } from '../utils/misc';
+import { formatAge, formatDate, formatGender, slugify } from '../utils/misc';
 import useRegistrationFilter from '../hooks/useRegistrationFilter';
 import SortButton from './TableSortButton';
 import TH from './TableHeaderCell';
@@ -21,6 +22,7 @@ export default function RegistrationsTable({
   setRegistrationSidebarIsOpen,
   setSidebarRegistration,
 }: Props) {
+  const csvDownloadLink = React.useRef<HTMLAnchorElement>(null);
   const {
     registrations,
     gender,
@@ -42,11 +44,36 @@ export default function RegistrationsTable({
     setRegistrationSidebarIsOpen(true);
   };
 
+  const handleExportToCsvClick = async () => {
+    const response = await fetch(
+      `/api/registrations-to-csv?eventId=${event._id}`
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch the CSV data.');
+    }
+
+    const data = await response.json();
+    csvDownloadLink.current?.setAttribute(
+      'href',
+      `data:text/csv;charset=utf-8,${data.csv}`
+    );
+    csvDownloadLink.current?.setAttribute(
+      'download',
+      `${slugify(event.name)}-registrations-${format(
+        new Date(),
+        'MMddyyHHmmss'
+      )}.csv`
+    );
+    csvDownloadLink.current?.click();
+  };
+
   return (
     <div className="relative lg:static px-3">
       <div className="absolute top-6 right-6 flex">
         <button
           type="button"
+          onClick={handleExportToCsvClick}
           className="pr-4 flex items-center text-sm font-medium text-gray-700 transition-colors hover:text-black outline-none focus-visible:text-sky-600 focus-visible:underline group"
         >
           <svg
@@ -65,6 +92,9 @@ export default function RegistrationsTable({
           </svg>
           Export to csv
         </button>
+        <a ref={csvDownloadLink} className="hidden" aria-hidden="true">
+          Download registration csv
+        </a>
         <button
           type="button"
           onClick={() => setEventTotalsSidebarIsOpen(true)}
@@ -91,7 +121,17 @@ export default function RegistrationsTable({
         <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">
           {event.name}
         </h2>
-        <p className="text-gray-700">{event.dates}</p>
+        <p className="text-gray-700">
+          {event.dates.map((d, i) => {
+            const date = format(new Date(d), 'EEE LLL do');
+
+            if (i === 0) {
+              return `${date} - `;
+            }
+            return date;
+          })}
+          , {new Date(event.dates[0]).getFullYear()}
+        </p>
       </div>
       <div className="mt-10 w-full shadow rounded-md border border-gray-200">
         <div className="py-6 px-5 flex flex-col md:flex-row lg:flex-col xl:flex-row justify-between gap-x-4 xl:gap-x-6 border-b border-gray-200">
@@ -248,7 +288,9 @@ export default function RegistrationsTable({
                         </p>
                       </div>
                     </TD>
-                    <TD className="text-center">{formatAge(r.birthday)}</TD>
+                    <TD className="text-center">
+                      {formatAge(r.birthday, event.dates[0])}
+                    </TD>
                     <TD className="text-center">{formatGender(r.gender)}</TD>
                     <TD>
                       {r.races.map(r => (
@@ -301,7 +343,7 @@ export default function RegistrationsTable({
                   </p>
                   <p className="mt-0.5">
                     <span className="capitalize">{r.gender}</span> -{' '}
-                    {formatAge(r.birthday)} years old
+                    {formatAge(r.birthday, event.dates[0])} years old
                   </p>
                   <div className="mt-0.5">
                     {r.races.map(r => (
