@@ -39,6 +39,7 @@ export interface Event {
   races: Race[];
   raceTotals: Race[];
   registrations: Registration[];
+  logo: string;
 }
 
 export type Gender = 'all' | 'female' | 'male';

@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { format } from 'date-fns';
 import { Event, Gender, Registration } from '../interfaces';
 import { formatAge, formatDate, formatGender, slugify } from '../utils/misc';
@@ -71,21 +72,29 @@ export default function RegistrationsTable({
   return (
     <div className="relative lg:static px-3">
       <div className="flex flex-col justify-between">
-        <div className="flex flex-col items-center text-center lg:text-left lg:items-start">
-          <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">
-            {event.name}
-          </h2>
-          <p className="mt-2 text-gray-700">
-            {event.dates.map((d, i) => {
-              const date = format(new Date(d), 'EEE LLL do');
+        <div className="flex flex-col lg:flex-row items-center text-center lg:text-left">
+          <Image
+            src={`${event.logo}`}
+            alt={event.name}
+            height={80}
+            width={80}
+          />
+          <div className="mt-3 lg:mt-0 lg:ml-4">
+            <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">
+              {event.name}
+            </h2>
+            <p className="mt-1 text-gray-700">
+              {event.dates.map((d, i) => {
+                const date = format(new Date(d), 'EEE LLL do');
 
-              if (i === 0) {
-                return `${date} - `;
-              }
-              return date;
-            })}
-            , {new Date(event.dates[0]).getFullYear()}
-          </p>
+                if (i === 0) {
+                  return `${date} - `;
+                }
+                return date;
+              })}
+              , {new Date(event.dates[0]).getFullYear()}
+            </p>
+          </div>
         </div>
         <div className="mt-6 lg:mt-0 lg:absolute lg:top-6 lg:right-6 flex justify-center lg:justify-end">
           <button

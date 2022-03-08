@@ -9,8 +9,6 @@ export default function NavSidebar() {
     winter: '/dotys-dog-days-of-winter-race',
   };
 
-  console.log(router.pathname);
-
   return (
     <>
       <div className="lg:hidden bg-black flex justify-end">
@@ -24,25 +22,29 @@ export default function NavSidebar() {
       <div className="py-7 lg:py-12 lg:w-64 xl:w-72 px-7 lg:fixed lg:h-screen flex lg:flex-col justify-between bg-gray-900">
         <div className="flex flex-col sm:flex-row justify-between lg:flex-col w-full">
           <h3 className="lg:mb-10 text-center sm:text-left text-xl font-semibold text-gray-200">
-            3D Mushing Events
+            <Link href="/">3D Mushing Events</Link>
           </h3>
           <nav className="mt-5 sm:mt-0 flex justify-center items-center gap-x-3 lg:flex-col">
             <Link href="/dotys-dusty-dog-dryland-race">
               <a
                 className={`${
-                  router.pathname === eventLinks.fall ? 'bg-gray-800 ' : ''
+                  router.pathname === eventLinks.fall
+                    ? 'bg-gray-800 text-white '
+                    : ''
                 }py-2 px-4 lg:w-full rounded-md text-gray-300 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-600 focus-visible:ring-offset-gray-900`}
               >
-                Fall race
+                Fall event
               </a>
             </Link>
             <Link href="/dotys-dog-days-of-winter-race">
               <a
                 className={`${
-                  router.pathname === eventLinks.winter ? 'bg-gray-800 ' : ''
+                  router.pathname === eventLinks.winter
+                    ? 'bg-gray-800 text-white '
+                    : ''
                 }lg:mt-2 py-2 px-4 lg:w-full rounded-md text-gray-300 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-600 focus-visible:ring-offset-gray-900`}
               >
-                Winter race
+                Winter event
               </a>
             </Link>
           </nav>
