@@ -70,68 +70,70 @@ export default function RegistrationsTable({
 
   return (
     <div className="relative lg:static px-3">
-      <div className="absolute top-6 right-6 flex">
-        <button
-          type="button"
-          onClick={handleExportToCsvClick}
-          className="pr-4 flex items-center text-sm font-medium text-gray-700 transition-colors hover:text-black outline-none focus-visible:text-sky-600 focus-visible:underline group"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="flex-shrink-0 mr-1 h-3.5 w-3.5 text-gray-500 group-focus-visible:text-sky-600"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-          Export to csv
-        </button>
-        <a ref={csvDownloadLink} className="hidden" aria-hidden="true">
-          Download registration csv
-        </a>
-        <button
-          type="button"
-          onClick={() => setEventTotalsSidebarIsOpen(true)}
-          className="pl-4 flex items-center border-l border-gray-200 text-sm font-medium text-gray-700 transition-colors hover:text-black leading-none outline-none focus-visible:text-sky-600 focus-visible:underline group"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="flex-shrink-0 mr-1 h-3.5 w-3.5 text-gray-500 group-focus-visible:text-sky-600"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
-            />
-          </svg>
-          Race totals
-        </button>
-      </div>
-      <div>
-        <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">
-          {event.name}
-        </h2>
-        <p className="text-gray-700">
-          {event.dates.map((d, i) => {
-            const date = format(new Date(d), 'EEE LLL do');
+      <div className="flex flex-col justify-between">
+        <div className="flex flex-col items-center text-center lg:text-left lg:items-start">
+          <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">
+            {event.name}
+          </h2>
+          <p className="mt-2 text-gray-700">
+            {event.dates.map((d, i) => {
+              const date = format(new Date(d), 'EEE LLL do');
 
-            if (i === 0) {
-              return `${date} - `;
-            }
-            return date;
-          })}
-          , {new Date(event.dates[0]).getFullYear()}
-        </p>
+              if (i === 0) {
+                return `${date} - `;
+              }
+              return date;
+            })}
+            , {new Date(event.dates[0]).getFullYear()}
+          </p>
+        </div>
+        <div className="mt-6 lg:mt-0 lg:absolute lg:top-6 lg:right-6 flex justify-center lg:justify-end">
+          <button
+            type="button"
+            onClick={handleExportToCsvClick}
+            className="mr-3 py-1.5 px-2.5 xxs:px-4 xxs:mr-4 flex items-center border border-gray-200 rounded-md bg-white shadow-sm text-sm font-medium text-gray-700 transition-colors hover:text-black hover:border-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-600"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="flex-shrink-0 mr-1 h-3.5 w-3.5 text-gray-500 group-focus-visible:text-sky-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            Export to csv
+          </button>
+          <a ref={csvDownloadLink} className="hidden" aria-hidden="true">
+            Download registration csv
+          </a>
+          <button
+            type="button"
+            onClick={() => setEventTotalsSidebarIsOpen(true)}
+            className="py-1.5 px-4 flex items-center border border-gray-200 rounded-md bg-white shadow-sm text-sm font-medium text-gray-700 transition-colors hover:text-black hover:border-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-600"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="flex-shrink-0 mr-1 h-3.5 w-3.5 text-gray-500 group-focus-visible:text-sky-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+              />
+            </svg>
+            Race totals
+          </button>
+        </div>
       </div>
       <div className="mt-10 w-full shadow rounded-md border border-gray-200">
         <div className="py-6 px-5 flex flex-col md:flex-row lg:flex-col xl:flex-row justify-between gap-x-4 xl:gap-x-6 border-b border-gray-200">

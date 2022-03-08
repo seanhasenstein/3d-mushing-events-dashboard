@@ -14,7 +14,7 @@ export default function Layout({ children }: Props) {
       </Head>
       <div className="flex flex-col lg:flex-row">
         <NavSidebar />
-        <main className="pt-14 px-3 lg:pr-8 lg:pl-72 xl:pl-80 w-full">
+        <main className="pt-10 lg:pt-14 px-3 lg:pr-8 lg:pl-72 xl:pl-80 w-full">
           {children}
         </main>
       </div>

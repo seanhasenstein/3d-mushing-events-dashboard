@@ -62,7 +62,7 @@ export default function RegistrationSidebar({
         )}
         aria-hidden={!isOpen}
       >
-        <div className="py-8 px-6 xxs:px-10">
+        <div className="py-8 px-6 sm:px-10">
           <button
             type="button"
             onClick={handleSidebarClose}
@@ -89,7 +89,7 @@ export default function RegistrationSidebar({
             <p className="text-sm text-gray-600">May 5th, 2022 at 9:34am</p>
           </div>
         </div>
-        <div className="pt-6 pb-7 px-6 xxs:px-10 h-[calc(100vh-210px)] overflow-y-auto border-t border-gray-200">
+        <div className="pt-6 pb-7 px-6 sm:px-10 h-[calc(100vh-210px)] overflow-y-auto border-t border-gray-200">
           <div>
             <h3 className="mb-1.5 font-medium tracking-tight">
               Participant information
@@ -223,7 +223,7 @@ export default function RegistrationSidebar({
             )}
           </div>
         </div>
-        <div className="py-8 px-6 xxs:px-10 absolute bottom-0 right-0 left-0 border-t border-gray-200 bg-white">
+        <div className="py-8 px-6 sm:px-10 absolute bottom-0 right-0 left-0 border-t border-gray-200 bg-white">
           {updateActive ? (
             <div className="flex justify-center gap-x-4">
               <button

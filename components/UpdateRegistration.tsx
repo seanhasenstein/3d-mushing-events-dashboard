@@ -61,7 +61,7 @@ export default function UpdateRegistration({
 
   return (
     <form>
-      <div className="mt-2.5 flex gap-x-4">
+      <div className="mt-2.5 flex flex-col xxs:flex-row gap-x-4">
         <div className="w-full">
           <label
             htmlFor="firstName"
@@ -78,7 +78,7 @@ export default function UpdateRegistration({
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:outline-none focus:ring-1 focus:ring-sky-700 focus:border-sky-700 sm:text-sm"
           />
         </div>
-        <div className="w-full">
+        <div className="mt-4 xxs:mt-0 w-full">
           <label
             htmlFor="lastName"
             className="block text-xs font-medium text-gray-700"
@@ -127,7 +127,7 @@ export default function UpdateRegistration({
           className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:outline-none focus:ring-1 focus:ring-sky-700 focus:border-sky-700 sm:text-sm"
         />
       </div>
-      <div className="mt-4 flex gap-x-4">
+      <div className="mt-4 flex flex-col xxs:flex-row gap-x-4">
         <div className="w-full">
           <label
             htmlFor="city"
@@ -144,7 +144,7 @@ export default function UpdateRegistration({
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:outline-none focus:ring-1 focus:ring-sky-700 focus:border-sky-700 sm:text-sm"
           />
         </div>
-        <div className="w-full">
+        <div className="mt-4 xxs:mt-0 w-full">
           <label
             htmlFor="state"
             className="block text-xs font-medium text-gray-700"
@@ -166,7 +166,7 @@ export default function UpdateRegistration({
           </select>
         </div>
       </div>
-      <div className="mt-4 flex gap-x-4">
+      <div className="mt-4 flex flex-col xxs:flex-row gap-x-4">
         <div className="w-full">
           <label
             htmlFor="gender"
@@ -185,7 +185,7 @@ export default function UpdateRegistration({
             <option value="male">Male</option>
           </select>
         </div>
-        <div className="w-full">
+        <div className="mt-4 xxs:mt-0 w-full">
           <label
             htmlFor="birthday"
             className="block text-xs font-medium text-gray-700"
