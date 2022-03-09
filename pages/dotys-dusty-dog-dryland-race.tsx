@@ -2,8 +2,9 @@ import React from 'react';
 import { GetServerSideProps } from 'next';
 import { ObjectId } from 'mongodb';
 import { connectToDb } from '../db';
-import EventHome from '../components/EventHome';
+import ProtectedRoute from '../components/ProtectedRoute';
 import Layout from '../components/Layout';
+import EventHome from '../components/EventHome';
 import { Event } from '../interfaces';
 
 export const getServerSideProps: GetServerSideProps = async () => {
@@ -37,5 +38,9 @@ export const getServerSideProps: GetServerSideProps = async () => {
 };
 
 export default function DotyDustyDogDryland({ event }: { event: Event }) {
-  return <Layout>{event && <EventHome event={event} />}</Layout>;
+  return (
+    <ProtectedRoute>
+      <Layout>{event && <EventHome event={event} />}</Layout>
+    </ProtectedRoute>
+  );
 }

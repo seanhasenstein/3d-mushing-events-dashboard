@@ -60,4 +60,5 @@ export type TableProps = {
 
 export interface ExtendRequest extends NextApiRequest {
   db: Db;
+  query: { [key: string]: string };
 }

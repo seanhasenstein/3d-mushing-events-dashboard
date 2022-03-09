@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { signOut } from 'next-auth/react';
 
 export default function NavSidebar() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function NavSidebar() {
       <div className="lg:hidden bg-black flex justify-end">
         <button
           type="button"
+          onClick={() => signOut()}
           className="py-1.5 px-3 text-gray-600 text-sm focus:outline-none focus-visible:text-gray-400 focus-visible:underline"
         >
           Logout
@@ -52,6 +54,7 @@ export default function NavSidebar() {
         <div className="hidden lg:block">
           <button
             type="button"
+            onClick={() => signOut()}
             className="py-2 px-4 w-full flex justify-center items-center bg-white/5 border-t border-gray-700/50 rounded shadow-sm text-[15px] text-gray-300 leading-3 hover:border-white/10 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-500 focus-visible:ring-offset-gray-900"
           >
             Logout

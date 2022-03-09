@@ -2,18 +2,13 @@ import { NextApiResponse } from 'next';
 import nc from 'next-connect';
 import { createObjectCsvStringifier } from 'csv-writer';
 import { format, utcToZonedTime } from 'date-fns-tz';
+import { withAuth } from '../../utils/auth';
 import database from '../../middleware/db';
 import { event } from '../../db';
 import { ExtendRequest } from '../../interfaces';
 import { formatAge, formatPhoneNumber, formatToMoney } from '../../utils/misc';
 
-interface Request extends ExtendRequest {
-  query: {
-    eventId: string;
-  };
-}
-
-const handler = nc<Request, NextApiResponse>()
+const handler = nc<ExtendRequest, NextApiResponse>()
   .use(database)
   .get(async (req, res) => {
     const fetchedEvent = await event.getEventById(req.db, req.query.eventId);
@@ -135,4 +130,4 @@ const handler = nc<Request, NextApiResponse>()
     res.json({ csv, raceReducer });
   });
 
-export default handler;
+export default withAuth(handler);
