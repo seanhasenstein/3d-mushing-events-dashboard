@@ -1,11 +1,13 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
 import { ObjectId } from 'mongodb';
-import ProtectedRoute from '../components/ProtectedRoute';
-import Layout from '../components/Layout';
-import EventHome from '../components/EventHome';
 import { connectToDb } from '../db';
 import { Event } from '../interfaces';
+import { getRaceTotals } from '../utils/event';
+import ProtectedRoute from '../components/ProtectedRoute';
+import { RegistrationProvider } from '../hooks/useRegistrationData';
+import Layout from '../components/Layout';
+import EventHome from '../components/EventHome';
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const db = await connectToDb();
@@ -13,22 +15,14 @@ export const getServerSideProps: GetServerSideProps = async () => {
     .collection('events')
     .findOne<Event>({ _id: new ObjectId('622197c11853e4e8e8a82931') });
 
-  const accumulator = event?.races.map(r => ({ ...r, total: 0 }));
+  if (!event) {
+    return {
+      props: { error: 'Failed to fetch the event.' },
+      // TODO: handle when no event is found.
+    };
+  }
 
-  const raceTotals = event?.registrations.reduce(
-    (accumulator, currentRegistration) => {
-      currentRegistration.races.forEach(race => {
-        accumulator = accumulator?.map(a => {
-          if (a.id === race.id) {
-            return { ...a, total: a.total + 1 };
-          }
-          return a;
-        });
-      });
-      return accumulator;
-    },
-    accumulator
-  );
+  const raceTotals = getRaceTotals(event);
 
   return {
     props: {
@@ -40,7 +34,11 @@ export const getServerSideProps: GetServerSideProps = async () => {
 export default function DotyDogDaysOfWinter({ event }: { event: Event }) {
   return (
     <ProtectedRoute>
-      <Layout>{event && <EventHome event={event} />}</Layout>
+      <RegistrationProvider data={event}>
+        <Layout>
+          <EventHome />
+        </Layout>
+      </RegistrationProvider>
     </ProtectedRoute>
   );
 }

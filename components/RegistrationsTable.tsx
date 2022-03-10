@@ -39,7 +39,7 @@ export default function RegistrationsTable({
   } = useRegistrationFilter(event.registrations);
 
   const handleViewClick = (id: string) => {
-    const registration = registrations.find(r => r._id === id);
+    const registration = registrations.find(r => r.id === id);
     if (!registration) return;
     setSidebarRegistration(registration);
     setRegistrationSidebarIsOpen(true);
@@ -283,13 +283,13 @@ export default function RegistrationsTable({
             <tbody>
               {registrations.length > 0 ? (
                 registrations.map(r => (
-                  <tr key={r._id} className="group">
+                  <tr key={r.id} className="group">
                     <TD>{formatDate(r.createdAt, 'MM/dd/yyyy')}</TD>
                     <TD>
                       <div>
                         <button
                           type="button"
-                          onClick={() => handleViewClick(r._id)}
+                          onClick={() => handleViewClick(r.id)}
                           className="font-medium text-black text-left hover:underline outline-none focus-visible:text-sky-600 focus-visible:underline"
                         >
                           {r.firstName} {r.lastName}
@@ -316,7 +316,7 @@ export default function RegistrationsTable({
                     <TD className="text-right">
                       <button
                         type="button"
-                        onClick={() => handleViewClick(r._id)}
+                        onClick={() => handleViewClick(r.id)}
                         className="py-0.5 px-2.5 text-sky-600 font-medium rounded-full transition-all hover:bg-sky-100 hover:text-sky-700 outline-none focus-visible:underline"
                       >
                         View
@@ -341,8 +341,8 @@ export default function RegistrationsTable({
           {registrations.length > 0 ? (
             registrations.map(r => (
               <button
-                key={r._id}
-                onClick={() => handleViewClick(r._id)}
+                key={r.id}
+                onClick={() => handleViewClick(r.id)}
                 className="py-4 px-6 flex justify-between items-center w-full bg-white border-b border-gray-200 text-left last:rounded-b-md"
               >
                 <div className="text-sm text-gray-900">

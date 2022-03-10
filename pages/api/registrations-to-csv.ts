@@ -58,7 +58,7 @@ const handler = nc<ExtendRequest, NextApiResponse>()
           });
 
           const formattedRegistration = {
-            id: currentRegistration.registrationId,
+            id: currentRegistration.id,
             date: createdAt,
             firstName: currentRegistration.firstName,
             lastName: currentRegistration.lastName,

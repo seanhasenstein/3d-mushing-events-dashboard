@@ -3,6 +3,10 @@ import { differenceInYears } from 'date-fns';
 import { format } from 'date-fns-tz';
 import { Gender } from '../interfaces';
 
+export function calculateStripeFee(total: number) {
+  return total * 0.029 + 30;
+}
+
 export function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }

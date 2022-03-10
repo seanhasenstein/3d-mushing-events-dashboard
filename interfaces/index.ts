@@ -9,12 +9,11 @@ export interface Race {
 }
 
 export interface Registration {
-  _id: string;
-  registrationId: string;
+  id: string;
   firstName: string;
   lastName: string;
   birthday: string;
-  guardian?: string;
+  guardian: string | null;
   gender: 'male' | 'female';
   email: string;
   phone: string;
@@ -23,13 +22,21 @@ export interface Registration {
   races: Race[];
   summary: {
     trailFee: number;
-    ISDRAFee?: number;
+    isdraFee: number;
     subtotal: number;
     total: number;
     stripeFee: number;
   };
   createdAt: string;
   updatedAt: string;
+}
+
+type RegistrationWithoutSummary = Omit<Registration, 'summary'>;
+
+export interface UpdateRegistrationFormData extends RegistrationWithoutSummary {
+  subtotal: string;
+  trailFee: string;
+  isdraFee: string;
 }
 
 export interface Event {

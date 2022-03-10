@@ -8,11 +8,11 @@ import {
 } from '../utils/misc';
 import useEscapeKeydownClose from '../hooks/useEscapeKeydownClose';
 import useOutsideClickClose from '../hooks/useOutsideClickClose';
-import { Race, Registration } from '../interfaces';
+import { Event, Race, Registration } from '../interfaces';
 import UpdateRegistration from './UpdateRegistration';
 
 type Props = {
-  eventDates: string[];
+  event: Event;
   races: Race[];
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,7 +20,7 @@ type Props = {
 };
 
 export default function RegistrationSidebar({
-  eventDates,
+  event,
   races,
   isOpen,
   setIsOpen,
@@ -34,6 +34,16 @@ export default function RegistrationSidebar({
   useEscapeKeydownClose(isOpen, setIsOpen, () => {
     setUpdateActive(false);
   });
+
+  React.useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.body.style.overflow = 'inherit';
+    };
+  }, [isOpen]);
 
   const handleTriggerUpdateClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -84,25 +94,26 @@ export default function RegistrationSidebar({
           </button>
           <div>
             <p className="text-lg font-semibold text-gray-900">
-              Registration #{registration?.registrationId}
+              Registration #{registration?.id}
             </p>
             <p className="text-sm text-gray-600">May 5th, 2022 at 9:34am</p>
           </div>
         </div>
-        <div className="pt-6 pb-7 px-6 sm:px-10 h-[calc(100vh-210px)] overflow-y-auto border-t border-gray-200">
-          <div>
-            <h3 className="mb-1.5 font-medium tracking-tight">
-              Participant information
-            </h3>
-            {updateActive && registration ? (
-              <UpdateRegistration
-                eventDates={eventDates}
-                races={races}
-                registration={registration}
-                isOpen={isOpen}
-              />
-            ) : (
-              <>
+
+        {updateActive && registration ? (
+          <UpdateRegistration
+            event={event}
+            races={races}
+            registration={registration}
+            setUpdateActive={setUpdateActive}
+          />
+        ) : (
+          <>
+            <div className="pt-6 pb-7 px-6 sm:px-10 h-[calc(100vh-210px)] overflow-y-auto border-t border-gray-200">
+              <div>
+                <h3 className="mb-1.5 font-medium tracking-tight">
+                  Participant information
+                </h3>
                 <div className="flex">
                   <p className="w-20 text-sm text-gray-500">Name:</p>
                   <p className="mt-0.5 text-sm text-gray-900">
@@ -144,7 +155,7 @@ export default function RegistrationSidebar({
                   <p className="w-20 text-sm text-gray-500">Age:</p>
                   <p className="mt-0.5 text-sm text-gray-900">
                     {registration &&
-                      formatAge(registration.birthday, eventDates[0])}
+                      formatAge(registration.birthday, event.dates[0])}
                   </p>
                 </div>
                 {registration?.guardian && (
@@ -184,12 +195,12 @@ export default function RegistrationSidebar({
                         formatToMoney(registration.summary.trailFee, true)}
                     </p>
                   </div>
-                  {registration?.summary.ISDRAFee && (
+                  {registration?.summary.isdraFee && (
                     <div className="flex">
                       <p className="w-24 text-sm text-gray-500">ISDRA fee:</p>
                       <p className="mt-0.5 text-sm text-gray-900">
                         {registration &&
-                          formatToMoney(registration.summary.ISDRAFee, true)}
+                          formatToMoney(registration.summary.isdraFee, true)}
                       </p>
                     </div>
                   )}
@@ -219,40 +230,19 @@ export default function RegistrationSidebar({
                     </p>
                   </div>
                 </div>
-              </>
-            )}
-          </div>
-        </div>
-        <div className="py-8 px-6 sm:px-10 absolute bottom-0 right-0 left-0 border-t border-gray-200 bg-white">
-          {updateActive ? (
-            <div className="flex justify-center gap-x-4">
+              </div>
+            </div>
+            <div className="py-8 px-6 sm:px-10 absolute bottom-0 right-0 left-0 border-t border-gray-200 bg-white">
               <button
                 type="button"
-                onClick={e => {
-                  e.stopPropagation();
-                  setUpdateActive(false);
-                }}
-                className="px-3 py-2 w-full border border-gray-300 shadow-sm text-center text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-900 hover:border-gray-400/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-600"
+                onClick={handleTriggerUpdateClick}
+                className="px-3 py-2 w-full flex justify-center items-center border border-gray-300 shadow-sm text-center text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-900 hover:border-gray-400/60 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-600"
               >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="px-3 py-2 w-full border border-black shadow-sm text-center text-sm leading-4 font-medium rounded-md text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-600"
-              >
-                Update
+                Update registration
               </button>
             </div>
-          ) : (
-            <button
-              type="button"
-              onClick={handleTriggerUpdateClick}
-              className="px-3 py-2 w-full flex justify-center items-center border border-gray-300 shadow-sm text-center text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-900 hover:border-gray-400/60 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-600"
-            >
-              Update registration
-            </button>
-          )}
-        </div>
+          </>
+        )}
       </div>
     </>
   );

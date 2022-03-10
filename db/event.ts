@@ -1,5 +1,5 @@
 import { Db, ObjectId } from 'mongodb';
-import { Event } from '../interfaces';
+import { Event, Registration } from '../interfaces';
 
 const collections = {
   events: 'events',
@@ -15,4 +15,21 @@ export async function getEventById(db: Db, _id: string) {
   }
 
   return result;
+}
+
+export async function updateRegistration(
+  db: Db,
+  eventId: string,
+  updatedRegistration: Registration
+) {
+  const result = await db.collection<Event>('events').findOneAndUpdate(
+    { _id: eventId },
+    { $set: { 'registrations.$[element]': updatedRegistration } },
+    {
+      arrayFilters: [{ 'element.id': updatedRegistration.id }],
+      returnDocument: 'after',
+    }
+  );
+
+  return result.value;
 }

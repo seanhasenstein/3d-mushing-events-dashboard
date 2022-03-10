@@ -1,20 +1,27 @@
 import React from 'react';
-import { Event, Registration } from '../interfaces';
+import { Registration } from '../interfaces';
+import useRegistrationData from '../hooks/useRegistrationData';
 import RegistrationsTable from './RegistrationsTable';
 import RegistrationSidebar from './RegistrationSidebar';
 import EventTotalsSidebar from './EventTotalsSidebar';
 
-type Props = {
-  event: Event;
-};
-
-export default function EventHome({ event }: Props) {
+export default function EventHome() {
+  const { event } = useRegistrationData();
   const [eventTotalsSidebarIsOpen, setEventTotalsSidebarIsOpen] =
     React.useState(false);
   const [registrationSidebarIsOpen, setRegistrationSidebarIsOpen] =
     React.useState(false);
   const [sidebarRegistration, setSidebarRegistration] =
     React.useState<Registration>();
+
+  React.useEffect(() => {
+    if (sidebarRegistration) {
+      const updatedRegistration = event.registrations.find(
+        r => r.id === sidebarRegistration.id
+      );
+      setSidebarRegistration(updatedRegistration);
+    }
+  }, [event]);
 
   return (
     <>
@@ -25,7 +32,7 @@ export default function EventHome({ event }: Props) {
         setSidebarRegistration={setSidebarRegistration}
       />
       <RegistrationSidebar
-        eventDates={event.dates}
+        event={event}
         races={event.races}
         isOpen={registrationSidebarIsOpen}
         setIsOpen={setRegistrationSidebarIsOpen}
