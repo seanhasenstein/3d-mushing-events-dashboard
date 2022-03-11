@@ -2,31 +2,35 @@ import { NextApiResponse } from 'next';
 import nc from 'next-connect';
 import database from '../../middleware/db';
 import { event } from '../../db';
-import { Event, ExtendRequest } from '../../interfaces';
-import { ObjectId } from 'mongodb';
+import { ExtendRequest } from '../../interfaces';
+// import { ObjectId } from 'mongodb';
 
 const handler = nc<ExtendRequest, NextApiResponse>()
   .use(database)
   .get(async (req, res) => {
     const fetchedEvent = await event.getEventById(req.db, req.query.eventId);
 
-    const updatedRegistrations = fetchedEvent.registrations.map(
-      registration => {
-        const { ...rest } = registration;
-        const update = {
-          ...rest,
-        };
+    if (!fetchedEvent) {
+      throw new Error('Event not found!');
+    }
 
-        return update;
-      }
-    );
+    // const updatedRegistrations = fetchedEvent.registrations.map(
+    //   registration => {
+    //     const { ...rest } = registration;
+    //     const update = {
+    //       ...rest,
+    //     };
 
-    const updatedEvent: Event = {
-      ...fetchedEvent,
-      registrations: updatedRegistrations,
-    };
+    //     return update;
+    //   }
+    // );
 
-    const { _id, ...updateMinusId } = updatedEvent;
+    // const updatedEvent: Event = {
+    //   ...fetchedEvent,
+    //   registrations: updatedRegistrations,
+    // };
+
+    // const { _id, ...updateMinusId } = updatedEvent;
 
     // await req.db
     //   .collection('events')

@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <ProtectedRoute>
       <Layout>
-        <div className="sm:pt-4 pb-12 px-2 sm:px-8 grid lg:grid-cols-2 gap-12">
+        <div className="mx-auto sm:pt-4 pb-12 px-2 sm:px-8 max-w-5xl grid lg:grid-cols-2 gap-12">
           <div className="mx-auto py-8 px-6 sm:px-10 max-w-lg w-full bg-white rounded-md border border-gray-200 shadow-xl">
             <div className="flex justify-center">
               <Image src={fallLogo} alt="Fall event" height={72} width={72} />

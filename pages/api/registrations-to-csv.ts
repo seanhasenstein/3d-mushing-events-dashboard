@@ -12,6 +12,11 @@ const handler = nc<ExtendRequest, NextApiResponse>()
   .use(database)
   .get(async (req, res) => {
     const fetchedEvent = await event.getEventById(req.db, req.query.eventId);
+
+    if (!fetchedEvent) {
+      throw new Error('Event not found!');
+    }
+
     const { registrations } = fetchedEvent;
 
     const header = [

@@ -5,8 +5,9 @@ import { registrationSort } from '../utils/sort';
 import { registrationFilter } from '../utils/filter';
 
 export default function useRegistrationFilter(registrations: Registration[]) {
-  const [filteredRegistrations, setFilteredRegistrations] =
-    React.useState(registrations);
+  const [filteredRegistrations, setFilteredRegistrations] = React.useState<
+    Registration[]
+  >([]);
   const [sortBy, setSortBy] = React.useState<SortBy>('lastName');
   const [sortDirection, setSortDirection] =
     React.useState<SortDirection>('ascending');

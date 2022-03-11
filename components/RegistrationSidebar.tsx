@@ -10,6 +10,8 @@ import useEscapeKeydownClose from '../hooks/useEscapeKeydownClose';
 import useOutsideClickClose from '../hooks/useOutsideClickClose';
 import { Event, Race, Registration } from '../interfaces';
 import UpdateRegistration from './UpdateRegistration';
+import UpdateRegistratoinError from './UpdateRegistrationError';
+import usePreventYScroll from '../hooks/usePreventYScroll';
 
 type Props = {
   event: Event;
@@ -26,24 +28,16 @@ export default function RegistrationSidebar({
   setIsOpen,
   registration,
 }: Props) {
-  const [updateActive, setUpdateActive] = React.useState(false);
+  usePreventYScroll(isOpen);
   const sidebarRef = React.useRef<HTMLDivElement>(null);
+  const [updateActive, setUpdateActive] = React.useState(false);
   useOutsideClickClose(isOpen, setIsOpen, sidebarRef, () => {
     setUpdateActive(false);
   });
   useEscapeKeydownClose(isOpen, setIsOpen, () => {
     setUpdateActive(false);
   });
-
-  React.useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    }
-
-    return () => {
-      document.body.style.overflow = 'inherit';
-    };
-  }, [isOpen]);
+  const [updateError, setUpdateError] = React.useState(false);
 
   const handleTriggerUpdateClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -106,6 +100,7 @@ export default function RegistrationSidebar({
             races={races}
             registration={registration}
             setUpdateActive={setUpdateActive}
+            setUpdateError={setUpdateError}
           />
         ) : (
           <>
@@ -244,6 +239,12 @@ export default function RegistrationSidebar({
           </>
         )}
       </div>
+      {updateError && (
+        <UpdateRegistratoinError
+          updateError={updateError}
+          setUpdateError={setUpdateError}
+        />
+      )}
     </>
   );
 }

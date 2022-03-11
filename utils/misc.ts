@@ -4,7 +4,7 @@ import { format } from 'date-fns-tz';
 import { Gender } from '../interfaces';
 
 export function calculateStripeFee(total: number) {
-  return total * 0.029 + 30;
+  return Math.round(total * 0.029 + 30);
 }
 
 export function classNames(...classes: string[]) {

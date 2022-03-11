@@ -1,24 +1,24 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
-import { ObjectId } from 'mongodb';
-import { connectToDb } from '../db';
+import { connectToDb, event as eventCollection } from '../db';
 import { Event } from '../interfaces';
 import { getRaceTotals } from '../utils/event';
 import ProtectedRoute from '../components/ProtectedRoute';
 import { RegistrationProvider } from '../hooks/useRegistrationData';
 import Layout from '../components/Layout';
 import EventHome from '../components/EventHome';
+import EventErrorMessage from '../components/EventErrorMessage';
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const db = await connectToDb();
-  const event = await db
-    .collection('events')
-    .findOne<Event>({ _id: new ObjectId('622197c11853e4e8e8a82931') });
+  const event = await eventCollection.getEventById(
+    db,
+    '622197c11853e4e8e8a82931'
+  );
 
   if (!event) {
     return {
-      props: { error: 'Failed to fetch the event.' },
-      // TODO: handle when no event is found.
+      notFound: true,
     };
   }
 
@@ -31,13 +31,16 @@ export const getServerSideProps: GetServerSideProps = async () => {
   };
 };
 
-export default function DotyDogDaysOfWinter({ event }: { event: Event }) {
+type Props = {
+  event: Event;
+  error?: string;
+};
+
+export default function DotyDogDaysOfWinter({ event, error }: Props) {
   return (
     <ProtectedRoute>
       <RegistrationProvider data={event}>
-        <Layout>
-          <EventHome />
-        </Layout>
+        <Layout>{error ? <EventErrorMessage /> : <EventHome />}</Layout>
       </RegistrationProvider>
     </ProtectedRoute>
   );

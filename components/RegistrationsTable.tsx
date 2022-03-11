@@ -144,257 +144,252 @@ export default function RegistrationsTable({
           </button>
         </div>
       </div>
-      <div className="mt-10 w-full shadow rounded-md border border-gray-200">
-        <div className="py-6 px-5 flex flex-col md:flex-row lg:flex-col xl:flex-row justify-between gap-x-4 xl:gap-x-6 border-b border-gray-200">
-          <div className="w-full flex flex-col">
-            <label
-              htmlFor="search"
-              className="text-sm font-medium text-gray-800"
-            >
-              Search for a registration
-            </label>
-            <div className="mt-2 w-full relative">
-              <div className="absolute top-2.5 left-2.5">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-gray-400"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
+      {registrations.length > 0 && (
+        <>
+          <div className="mt-10 mb-1 w-full shadow rounded-md border border-gray-200">
+            <div className="py-6 px-5 flex flex-col md:flex-row lg:flex-col xl:flex-row justify-between gap-x-4 xl:gap-x-6 border-b border-gray-200">
+              <div className="w-full flex flex-col">
+                <label
+                  htmlFor="search"
+                  className="text-sm font-medium text-gray-800"
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                    clipRule="evenodd"
+                  Search for a registration
+                </label>
+                <div className="mt-2 w-full relative">
+                  <div className="absolute top-2.5 left-2.5">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 text-gray-400"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    name="search"
+                    id="search"
+                    placeholder="Search"
+                    value={query}
+                    onChange={e => setQuery(e.target.value)}
+                    className="py-2 pr-3 pl-9 w-full shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm border border-gray-300 rounded-md"
                   />
-                </svg>
+                </div>
               </div>
-              <input
-                type="text"
-                name="search"
-                id="search"
-                placeholder="Search"
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-                className="py-2 pr-3 pl-9 w-full shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm border border-gray-300 rounded-md"
-              />
+              <div className="mt-4 md:mt-0 lg:mt-4 xl:mt-0 relative flex flex-col sm:flex-row sm:gap-x-4 xl:gap-x-6 flex-shrink-0">
+                <div className="flex flex-col sm:w-1/3 md:w-[6rem] lg:w-5/12 xl:w-[6rem]">
+                  <label
+                    htmlFor="gender"
+                    className="text-sm font-medium text-gray-800"
+                  >
+                    Gender
+                  </label>
+                  <select
+                    name="gender"
+                    id="gender"
+                    value={gender}
+                    onChange={e => setGender(e.target.value as Gender)}
+                    className="mt-2 py-2 px-3 w-full shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm border border-gray-300 rounded-md"
+                  >
+                    <option value="all">All</option>
+                    <option value="female">Female</option>
+                    <option value="male">Male</option>
+                  </select>
+                </div>
+                <div className="mt-4 sm:mt-0 flex flex-col sm:w-2/3 md:w-[21rem] lg:w-7/12 xl:w-[22rem]">
+                  <label
+                    htmlFor="events"
+                    className="text-sm font-medium text-gray-800"
+                  >
+                    Race
+                  </label>
+                  <select
+                    name="race"
+                    id="race"
+                    value={raceId}
+                    onChange={e => setRaceId(e.target.value)}
+                    className="mt-2 py-2 pr-10 pl-3 sm:px-3 w-full shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm border border-gray-300 rounded-md"
+                  >
+                    <option value="all">All</option>
+                    {event.races.map(r => (
+                      <option key={r.id} value={r.id}>
+                        {r.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="mt-4 md:mt-0 lg:mt-4 xl:mt-0 relative flex flex-col sm:flex-row sm:gap-x-4 xl:gap-x-6 flex-shrink-0">
-            <div className="flex flex-col sm:w-1/3 md:w-[6rem] lg:w-5/12 xl:w-[6rem]">
-              <label
-                htmlFor="gender"
-                className="text-sm font-medium text-gray-800"
-              >
-                Gender
-              </label>
-              <select
-                name="gender"
-                id="gender"
-                value={gender}
-                onChange={e => setGender(e.target.value as Gender)}
-                className="mt-2 py-2 px-3 w-full shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm border border-gray-300 rounded-md"
-              >
-                <option value="all">All</option>
-                <option value="female">Female</option>
-                <option value="male">Male</option>
-              </select>
-            </div>
-            <div className="mt-4 sm:mt-0 flex flex-col sm:w-2/3 md:w-[21rem] lg:w-7/12 xl:w-[22rem]">
-              <label
-                htmlFor="events"
-                className="text-sm font-medium text-gray-800"
-              >
-                Race
-              </label>
-              <select
-                name="race"
-                id="race"
-                value={raceId}
-                onChange={e => setRaceId(e.target.value)}
-                className="mt-2 py-2 pr-10 pl-3 sm:px-3 w-full shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm border border-gray-300 rounded-md"
-              >
-                <option value="all">All</option>
-                {event.races.map(r => (
-                  <option key={r.id} value={r.id}>
-                    {r.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-        <div className="hidden md:block">
-          <table className="w-full">
-            <thead>
-              <tr className="group">
-                <TH>
-                  <SortButton
-                    label="Date"
-                    sortBy="createdAt"
-                    activeSortBy={sortBy}
-                    sortDirection={sortDirection}
-                    setSortBy={setSortBy}
-                    setSortDirection={setSortDirection}
-                  />
-                </TH>
-                <TH>
-                  <SortButton
-                    label="Name"
-                    sortBy="lastName"
-                    activeSortBy={sortBy}
-                    sortDirection={sortDirection}
-                    setSortBy={setSortBy}
-                    setSortDirection={setSortDirection}
-                  />
-                </TH>
-                <TH className="pl-6 text-center">
-                  <SortButton
-                    label="Age"
-                    sortBy="birthday"
-                    activeSortBy={sortBy}
-                    sortDirection={sortDirection}
-                    setSortBy={setSortBy}
-                    setSortDirection={setSortDirection}
-                  />
-                </TH>
-                <TH className="pl-6 text-center">
-                  <SortButton
-                    label="Gender"
-                    sortBy="gender"
-                    activeSortBy={sortBy}
-                    sortDirection={sortDirection}
-                    setSortBy={setSortBy}
-                    setSortDirection={setSortDirection}
-                  />
-                </TH>
-                <TH>
-                  <SortButton
-                    label="Events"
-                    sortBy="events"
-                    activeSortBy={sortBy}
-                    sortDirection={sortDirection}
-                    setSortBy={setSortBy}
-                    setSortDirection={setSortDirection}
-                  />
-                </TH>
-                <TH />
-              </tr>
-            </thead>
-            <tbody>
-              {registrations.length > 0 ? (
-                registrations.map(r => (
-                  <tr key={r.id} className="group">
-                    <TD>{formatDate(r.createdAt, 'MM/dd/yyyy')}</TD>
-                    <TD>
-                      <div>
+            <div className="hidden md:block">
+              <table className="w-full">
+                <thead>
+                  <tr className="group">
+                    <TH>
+                      <SortButton
+                        label="Date"
+                        sortBy="createdAt"
+                        activeSortBy={sortBy}
+                        sortDirection={sortDirection}
+                        setSortBy={setSortBy}
+                        setSortDirection={setSortDirection}
+                      />
+                    </TH>
+                    <TH>
+                      <SortButton
+                        label="Name"
+                        sortBy="lastName"
+                        activeSortBy={sortBy}
+                        sortDirection={sortDirection}
+                        setSortBy={setSortBy}
+                        setSortDirection={setSortDirection}
+                      />
+                    </TH>
+                    <TH className="pl-6 text-center">
+                      <SortButton
+                        label="Age"
+                        sortBy="birthday"
+                        activeSortBy={sortBy}
+                        sortDirection={sortDirection}
+                        setSortBy={setSortBy}
+                        setSortDirection={setSortDirection}
+                      />
+                    </TH>
+                    <TH className="pl-6 text-center">
+                      <SortButton
+                        label="Gender"
+                        sortBy="gender"
+                        activeSortBy={sortBy}
+                        sortDirection={sortDirection}
+                        setSortBy={setSortBy}
+                        setSortDirection={setSortDirection}
+                      />
+                    </TH>
+                    <TH>
+                      <SortButton
+                        label="Events"
+                        sortBy="events"
+                        activeSortBy={sortBy}
+                        sortDirection={sortDirection}
+                        setSortBy={setSortBy}
+                        setSortDirection={setSortDirection}
+                      />
+                    </TH>
+                    <TH />
+                  </tr>
+                </thead>
+                <tbody>
+                  {event.registrations.length === 0 && (
+                    <tr className="group">
+                      <TD>There are currently 0 registrations</TD>
+                      <TD />
+                      <TD />
+                      <TD />
+                      <TD />
+                      <TD />
+                    </tr>
+                  )}
+                  {registrations.map(r => (
+                    <tr key={r.id} className="group">
+                      <TD>{formatDate(r.createdAt, 'MM/dd/yyyy')}</TD>
+                      <TD>
+                        <div>
+                          <button
+                            type="button"
+                            onClick={() => handleViewClick(r.id)}
+                            className="font-medium text-black text-left hover:underline outline-none focus-visible:text-sky-600 focus-visible:underline"
+                          >
+                            {r.firstName} {r.lastName}
+                          </button>
+                          <p className="text-gray-600">
+                            {r.city}, {r.state}
+                          </p>
+                        </div>
+                      </TD>
+                      <TD className="text-center">
+                        {formatAge(r.birthday, event.dates[0])}
+                      </TD>
+                      <TD className="text-center">{formatGender(r.gender)}</TD>
+                      <TD>
+                        {r.races.map(r => (
+                          <p
+                            key={r.id}
+                            className="mt-2 xl:mt-1 first:mt-0 text-[0.8125rem] leading-snug"
+                          >
+                            {r.name}
+                          </p>
+                        ))}
+                      </TD>
+                      <TD className="text-right">
                         <button
                           type="button"
                           onClick={() => handleViewClick(r.id)}
-                          className="font-medium text-black text-left hover:underline outline-none focus-visible:text-sky-600 focus-visible:underline"
+                          className="py-0.5 px-2.5 text-sky-600 font-medium rounded-full transition-all hover:bg-sky-100 hover:text-sky-700 outline-none focus-visible:underline"
                         >
-                          {r.firstName} {r.lastName}
+                          View
                         </button>
-                        <p className="text-gray-600">
-                          {r.city}, {r.state}
-                        </p>
-                      </div>
-                    </TD>
-                    <TD className="text-center">
-                      {formatAge(r.birthday, event.dates[0])}
-                    </TD>
-                    <TD className="text-center">{formatGender(r.gender)}</TD>
-                    <TD>
+                      </TD>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="md:hidden">
+              {registrations.map(r => (
+                <button
+                  key={r.id}
+                  onClick={() => handleViewClick(r.id)}
+                  className="py-4 px-6 flex justify-between items-center w-full bg-white border-b border-gray-200 text-left last:rounded-b-md"
+                >
+                  <div className="text-sm text-gray-900">
+                    <p className="font-medium">
+                      {r.firstName} {r.lastName}
+                    </p>
+                    <p className="mt-0.5">
+                      {r.city}, {r.state}
+                    </p>
+                    <p className="mt-0.5">
+                      <span className="capitalize">{r.gender}</span> -{' '}
+                      {formatAge(r.birthday, event.dates[0])} years old
+                    </p>
+                    <div className="mt-0.5">
                       {r.races.map(r => (
-                        <p
-                          key={r.id}
-                          className="mt-2 xl:mt-1 first:mt-0 text-[0.8125rem] leading-snug"
-                        >
+                        <p key={r.id} className="mt-2 first:mt-0 leading-snug">
                           {r.name}
                         </p>
                       ))}
-                    </TD>
-                    <TD className="text-right">
-                      <button
-                        type="button"
-                        onClick={() => handleViewClick(r.id)}
-                        className="py-0.5 px-2.5 text-sky-600 font-medium rounded-full transition-all hover:bg-sky-100 hover:text-sky-700 outline-none focus-visible:underline"
-                      >
-                        View
-                      </button>
-                    </TD>
-                  </tr>
-                ))
-              ) : (
-                <tr className="group">
-                  <TD className="font-medium">No results found.</TD>
-                  <TD />
-                  <TD />
-                  <TD />
-                  <TD />
-                  <TD />
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-        <div className="md:hidden">
-          {registrations.length > 0 ? (
-            registrations.map(r => (
-              <button
-                key={r.id}
-                onClick={() => handleViewClick(r.id)}
-                className="py-4 px-6 flex justify-between items-center w-full bg-white border-b border-gray-200 text-left last:rounded-b-md"
-              >
-                <div className="text-sm text-gray-900">
-                  <p className="font-medium">
-                    {r.firstName} {r.lastName}
-                  </p>
-                  <p className="mt-0.5">
-                    {r.city}, {r.state}
-                  </p>
-                  <p className="mt-0.5">
-                    <span className="capitalize">{r.gender}</span> -{' '}
-                    {formatAge(r.birthday, event.dates[0])} years old
-                  </p>
-                  <div className="mt-0.5">
-                    {r.races.map(r => (
-                      <p key={r.id} className="mt-2 first:mt-0 leading-snug">
-                        {r.name}
-                      </p>
-                    ))}
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-gray-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <span className="sr-only">View registration</span>
-                </div>
-              </button>
-            ))
-          ) : (
-            <p className="py-4 px-5 text-sm text-gray-900 font-medium">
-              No results found.
+                  <div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 text-gray-400"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span className="sr-only">View registration</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="mt-1 mb-2 py-5">
+            <p className="text-sm text-gray-700">
+              Showing 1 to {registrations.length} of {registrations.length}{' '}
+              results
             </p>
-          )}
-        </div>
-      </div>
-      {registrations.length > 0 && (
-        <div className="mt-1 mb-2 py-5">
-          <p className="text-sm text-gray-700">
-            Showing 1 to {registrations.length} of {registrations.length}{' '}
-            results
-          </p>
-        </div>
+          </div>
+        </>
       )}
     </div>
   );

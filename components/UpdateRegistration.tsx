@@ -1,15 +1,18 @@
 import React from 'react';
-import { format } from 'date-fns';
 import { Event, Race, Registration } from '../interfaces';
 import useRegistrationData from '../hooks/useRegistrationData';
-import { formatPhoneNumber, requiresGuardian, stateList } from '../utils/misc';
-import { updateMutation } from '../utils/registration';
+import { requiresGuardian, stateList } from '../utils/misc';
+import {
+  formatRegistrationForForm,
+  updateRegistrationMutation,
+} from '../utils/registration';
 
 type Props = {
   event: Event;
   races: Race[];
   registration: Registration;
   setUpdateActive: React.Dispatch<React.SetStateAction<boolean>>;
+  setUpdateError: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function UpdateRegistration({
@@ -17,32 +20,12 @@ export default function UpdateRegistration({
   races,
   registration,
   setUpdateActive,
+  setUpdateError,
 }: Props) {
   const { updateEvent } = useRegistrationData();
-  const [values, setValues] = React.useState(() => {
-    const { summary, ...rest } = registration;
-    const phone = formatPhoneNumber(registration.phone);
-    const birthday = format(new Date(registration.birthday), 'yyyy-MM-dd');
-    const guardian = registration.guardian || '';
-    const subtotal = (Math.round(registration.summary.subtotal) / 100).toFixed(
-      2
-    );
-    const trailFee = (Math.round(registration.summary.trailFee) / 100).toFixed(
-      2
-    );
-    const isdraFee = (
-      Math.round(registration.summary.isdraFee || 0) / 100
-    ).toFixed(2);
-    return {
-      ...rest,
-      phone,
-      birthday,
-      guardian,
-      subtotal,
-      trailFee,
-      isdraFee,
-    };
-  });
+  const [values, setValues] = React.useState(() =>
+    formatRegistrationForForm(registration)
+  );
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -75,14 +58,19 @@ export default function UpdateRegistration({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const updatedEvent = await updateMutation(
-      event._id,
-      registration.id,
-      values
-    );
-    // TODO: error handling?
-    updateEvent(updatedEvent);
-    setUpdateActive(false);
+
+    try {
+      const updatedEvent = await updateRegistrationMutation(
+        event._id,
+        registration.id,
+        values
+      );
+
+      updateEvent(updatedEvent);
+      setUpdateActive(false);
+    } catch (err) {
+      setUpdateError(true);
+    }
   };
 
   return (

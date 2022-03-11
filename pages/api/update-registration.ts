@@ -18,6 +18,11 @@ const handler = nc<UpdateRegistrationRequest, NextApiResponse>()
   .use(database)
   .post(async (req, res) => {
     const fetchedEvent = await event.getEventById(req.db, req.body.eventId);
+
+    if (!fetchedEvent) {
+      throw new Error('Event not found!');
+    }
+
     const updatedRegistration = formatRegistrationForDb(
       req.body.formData,
       fetchedEvent.dates[0]
