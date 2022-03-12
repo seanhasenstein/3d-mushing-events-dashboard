@@ -12,10 +12,11 @@ export default function useCsvDownload(event: Event) {
   const handleCsvClick = async () => {
     try {
       setStatus('loading');
-      await fetchRegistrationCsv(csvLinkRef, event, setError);
+      await fetchRegistrationCsv(csvLinkRef, event);
       setStatus('success');
     } catch (err) {
       setStatus('error');
+      setError(true);
     }
   };
 

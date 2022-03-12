@@ -102,15 +102,14 @@ export function formatRegistrationForForm(dbRegistration: Registration) {
 
 export async function fetchRegistrationCsv(
   ref: React.RefObject<HTMLAnchorElement>,
-  event: Event,
-  setError: React.Dispatch<React.SetStateAction<boolean>>
+  event: Event
 ) {
   const response = await fetch(
     `/api/registrations-to-csv?eventId=${event._id}`
   );
 
   if (!response.ok) {
-    setError(true);
+    throw new Error('Failed to download the csv data');
   }
 
   const data = await response.json();
