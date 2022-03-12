@@ -1,10 +1,11 @@
 import { format } from 'date-fns';
-import { Registration, UpdateRegistrationFormData } from '../interfaces';
+import { Event, Registration, UpdateRegistrationFormData } from '../interfaces';
 import {
   calculateStripeFee,
   formatPhoneNumber,
   removeNonDigits,
   requiresGuardian,
+  slugify,
 } from './misc';
 
 export async function updateRegistrationMutation(
@@ -97,4 +98,29 @@ export function formatRegistrationForForm(dbRegistration: Registration) {
     trailFee,
     isdraFee,
   };
+}
+
+export async function fetchRegistrationCsv(
+  ref: React.RefObject<HTMLAnchorElement>,
+  event: Event,
+  setError: React.Dispatch<React.SetStateAction<boolean>>
+) {
+  const response = await fetch(
+    `/api/registrations-to-csv?eventId=${event._id}`
+  );
+
+  if (!response.ok) {
+    setError(true);
+  }
+
+  const data = await response.json();
+  ref.current?.setAttribute('href', `data:text/csv;charset=utf-8,${data.csv}`);
+  ref.current?.setAttribute(
+    'download',
+    `${slugify(event.name)}-registrations-${format(
+      new Date(),
+      'MMddyyHHmmss'
+    )}.csv`
+  );
+  ref.current?.click();
 }

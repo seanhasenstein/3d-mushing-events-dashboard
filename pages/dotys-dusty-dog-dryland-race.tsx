@@ -7,7 +7,6 @@ import ProtectedRoute from '../components/ProtectedRoute';
 import { RegistrationProvider } from '../hooks/useRegistrationData';
 import Layout from '../components/Layout';
 import EventHome from '../components/EventHome';
-import EventErrorMessage from '../components/EventErrorMessage';
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const db = await connectToDb();
@@ -33,14 +32,15 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
 type Props = {
   event: Event;
-  error?: string;
 };
 
-export default function DotyDustyDogDryland({ event, error }: Props) {
+export default function DotyDustyDogDryland({ event }: Props) {
   return (
     <ProtectedRoute>
       <RegistrationProvider data={event}>
-        <Layout>{error ? <EventErrorMessage /> : <EventHome />}</Layout>
+        <Layout>
+          <EventHome />
+        </Layout>
       </RegistrationProvider>
     </ProtectedRoute>
   );

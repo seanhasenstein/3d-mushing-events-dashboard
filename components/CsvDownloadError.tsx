@@ -1,23 +1,22 @@
 import React from 'react';
 import useOutsideClickClose from '../hooks/useOutsideClickClose';
 import useEscapeKeydownClose from '../hooks/useEscapeKeydownClose';
+import usePreventYScroll from '../hooks/usePreventYScroll';
 
 type Props = {
-  updateError: boolean;
-  setUpdateError: React.Dispatch<React.SetStateAction<boolean>>;
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function UpdateRegistratoinError({
-  updateError,
-  setUpdateError,
-}: Props) {
+export default function CsvDownloadError({ isOpen, setIsOpen }: Props) {
   const modalRef = React.useRef<HTMLDivElement>(null);
-  useOutsideClickClose(updateError, setUpdateError, modalRef);
-  useEscapeKeydownClose(updateError, setUpdateError);
+  useOutsideClickClose(isOpen, setIsOpen, modalRef);
+  useEscapeKeydownClose(isOpen, setIsOpen);
+  usePreventYScroll(isOpen);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setUpdateError(false);
+    setIsOpen(false);
   };
 
   return (
@@ -39,10 +38,10 @@ export default function UpdateRegistratoinError({
           />
         </svg>
         <h3 className="mt-2 text-gray-900 font-bold text-lg uppercase tracking-wide">
-          Server Error
+          Download Error
         </h3>
         <p className="mt-2 text-gray-700 xxs:w-80 text-center">
-          Failed to update the registration. Please try again or{' '}
+          Failed to download the CSV file. Please try again or{' '}
           <a
             href="mailto:support@seanhasenstein.com"
             target="_blank"
@@ -58,7 +57,7 @@ export default function UpdateRegistratoinError({
           onClick={e => handleClick(e)}
           className="mt-5 py-1.5 px-6 flex justify-center items-center text-sm sm:text-base bg-gray-900 border border-black text-gray-100 rounded-md shadow-sm hover:bg-gray-800 transition-colors focus:outline-none focus-visible:ring-2 focus:ring-offset-2 focus:ring-sky-600"
         >
-          Back to the registration
+          Close this message
         </button>
       </div>
     </div>
