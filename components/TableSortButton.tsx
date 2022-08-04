@@ -37,9 +37,9 @@ export default function SortButton({
       <svg
         xmlns="http://www.w3.org/2000/svg"
         className={classNames(
-          'ml-2 h-4 w-4 text-gray-900 rounded',
+          'ml-2 h-4 w-4 text-gray-800 rounded',
           sortBy === activeSortBy
-            ? 'bg-gray-200'
+            ? 'bg-gray-300'
             : 'bg-bg-transparent text-transparent',
           sortDirection === 'ascending' ? '' : 'rotate-180'
         )}
