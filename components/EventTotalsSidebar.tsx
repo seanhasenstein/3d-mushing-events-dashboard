@@ -87,7 +87,7 @@ export default function EventTotalsSidebar({
             {Object.keys(sortedRaces).map(key => (
               <div
                 key={key}
-                className="py-3 text-sm border-b first:border-t border-gray-200"
+                className="text-sm border-b first:border-t border-gray-200"
               >
                 <button
                   type="button"
@@ -98,8 +98,7 @@ export default function EventTotalsSidebar({
                       setActiveRace(key);
                     }
                   }}
-                  className={`w-full flex justify-between items-center font-semibold text-gray-900${
-                    activeRace === key ? ' mb-2' : ''
+                  className={`py-3 w-full flex justify-between items-center font-semibold text-gray-900
                   }`}
                 >
                   {key}
@@ -131,20 +130,22 @@ export default function EventTotalsSidebar({
                     </svg>
                   )}
                 </button>
-                {sortedRaces[key].map(race => (
-                  <div
-                    key={race.id}
-                    className={`py-1.5 pl-2 flex justify-between gap-10${
-                      activeRace === key ? '' : ' hidden'
-                    }`}
-                  >
-                    <p className="text-gray-600">
-                      {race.category}
-                      {race.breed ? ` - ${race.breed}` : null}
-                    </p>
-                    <p>{race.total}</p>
-                  </div>
-                ))}
+                <div>
+                  {sortedRaces[key].map(race => (
+                    <div
+                      key={race.id}
+                      className={`py-1.5 first:pt-0.5 last:pb-3.5 pl-2 flex justify-between gap-10${
+                        activeRace === key ? '' : ' hidden'
+                      }`}
+                    >
+                      <p className="text-gray-600">
+                        {race.category}
+                        {race.breed ? ` - ${race.breed}` : null}
+                      </p>
+                      <p>{race.total}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
