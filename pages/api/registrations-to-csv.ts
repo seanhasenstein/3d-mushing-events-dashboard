@@ -34,6 +34,7 @@ const handler = nc<ExtendRequest, NextApiResponse>()
       { id: 'total', title: 'TOTAL' },
       { id: 'stripeFee', title: 'STRIPE FEE' },
       { id: 'net', title: 'NET' },
+      { id: 'stripeId', title: 'STRIPE ID' },
     ];
 
     const csvStringifier = createObjectCsvStringifier({ header });
@@ -86,6 +87,7 @@ const handler = nc<ExtendRequest, NextApiResponse>()
                 currentRegistration.summary.stripeFee,
               true
             ),
+            stripeId: currentRegistration.stripeId,
           };
 
           const updatedAccumulator = accumulator.map(a => {
