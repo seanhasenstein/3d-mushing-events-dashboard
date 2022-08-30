@@ -37,11 +37,21 @@ export default function UpdateRegistration({
     setValues(updatedValues);
   };
 
+  const handleNumberInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value.replace(/\D/g, '');
+
+    const updatedValues = {
+      ...values,
+      [e.target.name]: inputValue,
+    };
+    setValues(updatedValues);
+  };
+
   const handleEventChange = (newId: string, index: number) => {
     const newRace = races.find(r => r.id === newId);
     if (!newRace) return;
     const racesCopy = [...values.races];
-    racesCopy.splice(index, 1, newRace);
+    racesCopy.splice(index, 1, newRace.id);
     setValues({ ...values, races: racesCopy });
   };
 
@@ -206,22 +216,21 @@ export default function UpdateRegistration({
             </div>
             <div className="mt-4 xxs:mt-0 w-full">
               <label
-                htmlFor="birthday"
+                htmlFor="age"
                 className="block text-xs font-medium text-gray-700"
               >
                 Birthday
               </label>
               <input
-                type="date"
-                name="birthday"
-                id="birthday"
-                value={values.birthday}
-                onChange={handleInputChange}
+                name="age"
+                id="age"
+                value={values.age}
+                onChange={handleNumberInputChange}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:outline-none focus:ring-1 focus:ring-sky-700 focus:border-sky-700 sm:text-sm"
               />
             </div>
           </div>
-          {requiresGuardian(values.birthday, event.dates[0]) && (
+          {requiresGuardian(values.age) && (
             <div className="mt-4">
               <label
                 htmlFor="guardian"
@@ -241,54 +250,58 @@ export default function UpdateRegistration({
           )}
           <div className="mt-6 pt-6 border-t border-gray-200">
             <h3 className="font-medium tracking-tight">Events</h3>
-            {values.races.map((r, i) => (
-              <div key={r.id} className="mt-1.5 flex items-center gap-x-1">
-                <select
-                  name={`event-${i}`}
-                  id={`event-${i}`}
-                  value={r.id}
-                  onChange={event => handleEventChange(event.target.value, i)}
-                  title={r.name}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-1.5 pl-3 pr-8 truncate focus:outline-none focus:ring-1 focus:ring-sky-700 focus:border-sky-700 sm:text-sm"
-                >
-                  <option value="9999">Select an event</option>
-                  {races.map(r => (
-                    <option key={r.id} value={r.id}>
-                      {r.name}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  type="button"
-                  onClick={e => handleRemoveEventClick(e, i)}
-                  className="py-2 px-1.5 flex justify-center items-center border border-transparent rounded-md text-gray-900 hover:text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-600"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+            {values.races.map((r, i) => {
+              const eventRace = races.find(race => race.id === r);
+
+              return (
+                <div key={r} className="mt-1.5 flex items-center gap-x-1">
+                  <select
+                    name={`event-${i}`}
+                    id={`event-${i}`}
+                    value={r}
+                    onChange={event => handleEventChange(event.target.value, i)}
+                    title={`${eventRace?.sled} - ${eventRace?.category} - ${eventRace?.breed}}`}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-1.5 pl-3 pr-8 truncate focus:outline-none focus:ring-1 focus:ring-sky-700 focus:border-sky-700 sm:text-sm"
                   >
-                    <path
-                      fillRule="evenodd"
-                      d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <span className="sr-only">Remove event</span>
-                </button>
-              </div>
-            ))}
+                    <option value="9999">Select an event</option>
+                    {races.map(r => {
+                      return (
+                        <option key={r.id} value={r.id}>
+                          {r.sled} - {r.category}
+                          {r.breed ? ` - ${r.breed}` : null}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={e => handleRemoveEventClick(e, i)}
+                    className="py-2 px-1.5 flex justify-center items-center border border-transparent rounded-md text-gray-900 hover:text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-600"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span className="sr-only">Remove event</span>
+                  </button>
+                </div>
+              );
+            })}
             <div className="flex justify-end pr-9">
               <button
                 type="button"
                 onClick={() =>
                   setValues({
                     ...values,
-                    races: [
-                      ...values.races,
-                      { id: '9999', name: 'Select an event', notes: [] },
-                    ],
+                    races: [...values.races, '9999'],
                   })
                 }
                 className="mt-3 w-full flex justify-center items-center pl-3 pr-4 py-2 shadow-sm text-xs font-medium rounded-md text-gray-200 bg-gray-800 hover:bg-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-600"

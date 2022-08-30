@@ -23,10 +23,7 @@ const handler = nc<UpdateRegistrationRequest, NextApiResponse>()
       throw new Error('Event not found!');
     }
 
-    const updatedRegistration = formatRegistrationForDb(
-      req.body.formData,
-      fetchedEvent.dates[0]
-    );
+    const updatedRegistration = formatRegistrationForDb(req.body.formData);
 
     const result = await event.updateRegistration(
       req.db,

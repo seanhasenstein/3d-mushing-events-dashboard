@@ -39,7 +39,7 @@ export default function SortButton({
         className={classNames(
           'ml-2 h-4 w-4 text-gray-800 rounded',
           sortBy === activeSortBy
-            ? 'bg-gray-300'
+            ? 'bg-gray-300/75 border border-gray-400/50'
             : 'bg-bg-transparent text-transparent',
           sortDirection === 'ascending' ? '' : 'rotate-180'
         )}

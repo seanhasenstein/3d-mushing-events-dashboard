@@ -1,5 +1,4 @@
 import crypto from 'crypto';
-import { differenceInYears } from 'date-fns';
 import { format } from 'date-fns-tz';
 import { Gender } from '../interfaces';
 
@@ -48,11 +47,6 @@ export function createReceiptNumber() {
   return value.join('');
 }
 
-export function formatAge(birthday: string, eventDate: string) {
-  const age = differenceInYears(new Date(eventDate), new Date(birthday));
-  return age;
-}
-
 export function formatDate(
   dateString: string,
   stringFormat = 'MMM. dd, yyyy h:mmaa'
@@ -92,8 +86,8 @@ export function formatPhoneNumber(input: string) {
     .join('');
 }
 
-export function requiresGuardian(birthday: string, eventDate: string) {
-  return formatAge(birthday, eventDate) < 18;
+export function requiresGuardian(age: number) {
+  return age < 18;
 }
 
 export function slugify(input: string) {

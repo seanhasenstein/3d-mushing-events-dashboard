@@ -7,9 +7,8 @@ import EventTotalsSidebar from './EventTotalsSidebar';
 
 export default function EventHome() {
   const { event } = useRegistrationData();
-  const [eventTotalsSidebarIsOpen, setEventTotalsSidebarIsOpen] =
-    React.useState(false);
-  const [registrationSidebarIsOpen, setRegistrationSidebarIsOpen] =
+  const [totalsSidebarOpen, setTotalsSidebarOpen] = React.useState(false);
+  const [registrationSidebarOpen, setRegistrationSidebarOpen] =
     React.useState(false);
   const [sidebarRegistration, setSidebarRegistration] =
     React.useState<Registration>();
@@ -27,21 +26,21 @@ export default function EventHome() {
     <>
       <RegistrationsTable
         event={event}
-        setEventTotalsSidebarIsOpen={setEventTotalsSidebarIsOpen}
-        setRegistrationSidebarIsOpen={setRegistrationSidebarIsOpen}
+        setTotalsSidebarOpen={setTotalsSidebarOpen}
+        setRegistrationSidebarOpen={setRegistrationSidebarOpen}
         setSidebarRegistration={setSidebarRegistration}
       />
       <RegistrationSidebar
         event={event}
         races={event.races}
-        isOpen={registrationSidebarIsOpen}
-        setIsOpen={setRegistrationSidebarIsOpen}
+        isOpen={registrationSidebarOpen}
+        setIsOpen={setRegistrationSidebarOpen}
         registration={sidebarRegistration}
       />
       <EventTotalsSidebar
         raceTotals={event.raceTotals}
-        isOpen={eventTotalsSidebarIsOpen}
-        setIsOpen={setEventTotalsSidebarIsOpen}
+        isOpen={totalsSidebarOpen}
+        setIsOpen={setTotalsSidebarOpen}
       />
     </>
   );

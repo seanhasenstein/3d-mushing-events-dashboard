@@ -1,4 +1,4 @@
-import { Race, Registration } from '../interfaces';
+import { Registration } from '../interfaces';
 
 export default interface IFilter<T> {
   property: keyof T;
@@ -15,8 +15,8 @@ export function registrationFilter(
     }
 
     if (filter.property === 'races') {
-      const races: Race[] = object.races;
-      return races.some(r => r.id === filter.value);
+      const races: string[] = object.races;
+      return races.some(r => r === filter.value);
     }
 
     return object[filter.property] === filter.value;

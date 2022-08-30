@@ -7,7 +7,7 @@ export function getRaceTotals(event: Event) {
     (accumulator, currentRegistration) => {
       currentRegistration.races.forEach(race => {
         accumulator = accumulator?.map(a => {
-          if (a.id === race.id) {
+          if (a.id === race) {
             return { ...a, total: a.total + 1 };
           }
           return a;

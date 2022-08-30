@@ -8,9 +8,9 @@ export default function useRegistrationFilter(registrations: Registration[]) {
   const [filteredRegistrations, setFilteredRegistrations] = React.useState<
     Registration[]
   >([]);
-  const [sortBy, setSortBy] = React.useState<SortBy>('lastName');
+  const [sortBy, setSortBy] = React.useState<SortBy>('createdAt');
   const [sortDirection, setSortDirection] =
-    React.useState<SortDirection>('ascending');
+    React.useState<SortDirection>('descending');
   const [query, setQuery] = React.useState('');
   const [gender, setGender] = React.useState<Gender>('all');
   const [raceId, setRaceId] = React.useState('all');

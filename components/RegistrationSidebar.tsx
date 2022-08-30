@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   classNames,
-  formatAge,
   formatGender,
   formatPhoneNumber,
   formatToMoney,
@@ -10,8 +9,9 @@ import useEscapeKeydownClose from '../hooks/useEscapeKeydownClose';
 import useOutsideClickClose from '../hooks/useOutsideClickClose';
 import { Event, Race, Registration } from '../interfaces';
 import UpdateRegistration from './UpdateRegistration';
-import UpdateRegistratoinError from './UpdateRegistrationError';
+import UpdateRegistrationError from './UpdateRegistrationError';
 import usePreventYScroll from '../hooks/usePreventYScroll';
+import { format } from 'date-fns';
 
 type Props = {
   event: Event;
@@ -90,7 +90,14 @@ export default function RegistrationSidebar({
             <p className="text-lg font-semibold text-gray-900">
               Registration #{registration?.id}
             </p>
-            <p className="text-sm text-gray-600">May 5th, 2022 at 9:34am</p>
+            {registration?.createdAt && (
+              <p className="text-sm text-gray-600">
+                {format(
+                  new Date(registration.createdAt),
+                  "MMM do, yyyy 'at' h:mmaaa"
+                )}
+              </p>
+            )}
           </div>
         </div>
 
@@ -149,8 +156,7 @@ export default function RegistrationSidebar({
                 <div className="flex">
                   <p className="w-20 text-sm text-gray-500">Age:</p>
                   <p className="mt-0.5 text-sm text-gray-900">
-                    {registration &&
-                      formatAge(registration.birthday, event.dates[0])}
+                    {registration && registration.age}
                   </p>
                 </div>
                 {registration?.guardian && (
@@ -163,14 +169,19 @@ export default function RegistrationSidebar({
                 )}
                 <div className="mt-6 pt-6 border-t border-gray-200">
                   <h3 className="font-medium tracking-tight">Events</h3>
-                  {registration?.races.map(r => (
-                    <p
-                      key={r.id}
-                      className="mt-2 text-sm text-gray-900 leading-snug"
-                    >
-                      {r.name}
-                    </p>
-                  ))}
+                  {registration?.races.map(r => {
+                    const eventRace = event.races.find(er => er.id === r);
+
+                    return (
+                      <p
+                        key={r}
+                        className="mt-2 text-sm text-gray-900 leading-snug"
+                      >
+                        {eventRace?.sled} - {eventRace?.category}
+                        {eventRace?.breed ? ` - ${eventRace?.breed}` : null}
+                      </p>
+                    );
+                  })}
                 </div>
                 <div className="mt-6 pt-6 border-t border-gray-200">
                   <h3 className="mb-1.5 font-medium tracking-tight">
@@ -190,7 +201,7 @@ export default function RegistrationSidebar({
                         formatToMoney(registration.summary.trailFee, true)}
                     </p>
                   </div>
-                  {registration?.summary.isdraFee && (
+                  {registration?.summary.isdraFee ? (
                     <div className="flex">
                       <p className="w-24 text-sm text-gray-500">ISDRA fee:</p>
                       <p className="mt-0.5 text-sm text-gray-900">
@@ -198,7 +209,7 @@ export default function RegistrationSidebar({
                           formatToMoney(registration.summary.isdraFee, true)}
                       </p>
                     </div>
-                  )}
+                  ) : null}
                   <div className="flex">
                     <p className="w-24 text-sm text-gray-500">Total:</p>
                     <p className="mt-0.5 text-sm text-gray-900">
@@ -240,7 +251,7 @@ export default function RegistrationSidebar({
         )}
       </div>
       {updateError && (
-        <UpdateRegistratoinError
+        <UpdateRegistrationError
           updateError={updateError}
           setUpdateError={setUpdateError}
         />

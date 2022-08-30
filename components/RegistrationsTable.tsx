@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { format } from 'date-fns';
 import { Event, Gender, Registration } from '../interfaces';
-import { formatAge, formatDate, formatGender } from '../utils/misc';
+import { formatDate, formatGender } from '../utils/misc';
 import useRegistrationFilter from '../hooks/useRegistrationFilter';
 import useCsvDownload from '../hooks/useCsvDownload';
 import SortButton from './TableSortButton';
@@ -12,8 +12,8 @@ import CsvDownloadError from './CsvDownloadError';
 
 type Props = {
   event: Event;
-  setEventTotalsSidebarIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setRegistrationSidebarIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setTotalsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setRegistrationSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setSidebarRegistration: React.Dispatch<
     React.SetStateAction<Registration | undefined>
   >;
@@ -21,8 +21,8 @@ type Props = {
 
 export default function RegistrationsTable({
   event,
-  setEventTotalsSidebarIsOpen,
-  setRegistrationSidebarIsOpen,
+  setTotalsSidebarOpen,
+  setRegistrationSidebarOpen,
   setSidebarRegistration,
 }: Props) {
   const {
@@ -45,7 +45,7 @@ export default function RegistrationsTable({
     const registration = registrations.find(r => r.id === id);
     if (!registration) return;
     setSidebarRegistration(registration);
-    setRegistrationSidebarIsOpen(true);
+    setRegistrationSidebarOpen(true);
   };
 
   return (
@@ -127,7 +127,7 @@ export default function RegistrationsTable({
             </a>
             <button
               type="button"
-              onClick={() => setEventTotalsSidebarIsOpen(true)}
+              onClick={() => setTotalsSidebarOpen(true)}
               className="py-1.5 px-4 flex items-center border border-gray-200 rounded-md bg-white shadow-sm text-sm font-medium text-gray-700 transition-colors hover:text-black hover:border-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-600"
             >
               <svg
@@ -220,7 +220,8 @@ export default function RegistrationsTable({
                   <option value="all">All</option>
                   {event.races.map(r => (
                     <option key={r.id} value={r.id}>
-                      {r.name}
+                      {r.sled} - {r.category}
+                      {r.breed ? ` - ${r.breed}` : null}
                     </option>
                   ))}
                 </select>
@@ -254,7 +255,7 @@ export default function RegistrationsTable({
                   <TH className="pl-6 text-center">
                     <SortButton
                       label="Age"
-                      sortBy="birthday"
+                      sortBy="age"
                       activeSortBy={sortBy}
                       sortDirection={sortDirection}
                       setSortBy={setSortBy}
@@ -271,23 +272,18 @@ export default function RegistrationsTable({
                       setSortDirection={setSortDirection}
                     />
                   </TH>
-                  <TH>
-                    <SortButton
-                      label="Events"
-                      sortBy="events"
-                      activeSortBy={sortBy}
-                      sortDirection={sortDirection}
-                      setSortBy={setSortBy}
-                      setSortDirection={setSortDirection}
-                    />
-                  </TH>
+                  <TH>Events</TH>
                   <TH />
                 </tr>
               </thead>
               <tbody>
-                {event.registrations.length === 0 && (
+                {registrations.length === 0 && (
                   <tr className="group">
-                    <TD>There are currently 0 registrations</TD>
+                    <TD>
+                      {event.registrations.length > 0
+                        ? '0 registrations match your filter'
+                        : 'There are currently 0 registrations'}
+                    </TD>
                     <TD />
                     <TD />
                     <TD />
@@ -312,19 +308,22 @@ export default function RegistrationsTable({
                         </p>
                       </div>
                     </TD>
-                    <TD className="text-center">
-                      {formatAge(r.birthday, event.dates[0])}
-                    </TD>
+                    <TD className="text-center">{r.age}</TD>
                     <TD className="text-center">{formatGender(r.gender)}</TD>
                     <TD>
-                      {r.races.map(r => (
-                        <p
-                          key={r.id}
-                          className="mt-2 xl:mt-1 first:mt-0 text-[0.8125rem] leading-snug"
-                        >
-                          {r.name}
-                        </p>
-                      ))}
+                      {r.races.map(r => {
+                        const eventRace = event.races.find(er => er.id === r);
+
+                        return (
+                          <p
+                            key={r}
+                            className="mt-2 xl:mt-1 first:mt-0 text-[0.8125rem] leading-snug"
+                          >
+                            {eventRace?.sled} - {eventRace?.category}
+                            {eventRace?.breed ? ` - ${eventRace?.breed}` : null}
+                          </p>
+                        );
+                      })}
                     </TD>
                     <TD className="text-right">
                       <button
@@ -341,6 +340,13 @@ export default function RegistrationsTable({
             </table>
           </div>
           <div className="md:hidden">
+            {registrations.length === 0 ? (
+              <div className="py-4 px-6 flex justify-between items-center w-full bg-white border-b border-gray-200 text-left last:rounded-b-md">
+                {event.registrations.length > 0
+                  ? '0 registrations match your filter'
+                  : 'There are currently 0 registrations'}
+              </div>
+            ) : null}
             {registrations.map(r => (
               <button
                 key={r.id}
@@ -355,18 +361,23 @@ export default function RegistrationsTable({
                     {r.city}, {r.state}
                   </p>
                   <p className="mt-0.5 text-gray-600">
-                    <span className="capitalize">{r.gender}</span> -{' '}
-                    {formatAge(r.birthday, event.dates[0])} years old
+                    <span className="capitalize">{r.gender}</span> - {r.age}{' '}
+                    years old
                   </p>
                   <div className="mt-0.5">
-                    {r.races.map(r => (
-                      <p
-                        key={r.id}
-                        className="mt-2 first:mt-0 text-gray-600 leading-snug"
-                      >
-                        {r.name}
-                      </p>
-                    ))}
+                    {r.races.map(r => {
+                      const eventRace = event.races.find(er => er.id === r);
+
+                      return (
+                        <p
+                          key={r}
+                          className="mt-2 first:mt-0 text-gray-600 leading-snug"
+                        >
+                          {eventRace?.sled} - {eventRace?.category}
+                          {eventRace?.breed ? ` - ${eventRace?.breed}` : null}
+                        </p>
+                      );
+                    })}
                   </div>
                 </div>
                 <div>

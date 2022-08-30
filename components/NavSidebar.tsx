@@ -31,7 +31,7 @@ export default function NavSidebar() {
               <a
                 className={`${
                   router.pathname === eventLinks.fall
-                    ? 'bg-gray-800 text-white '
+                    ? 'bg-black/70 text-white '
                     : ''
                 }py-2 px-4 lg:w-full rounded-md text-gray-300 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-600 focus-visible:ring-offset-gray-900`}
               >
@@ -42,7 +42,7 @@ export default function NavSidebar() {
               <a
                 className={`${
                   router.pathname === eventLinks.winter
-                    ? 'bg-black/60 text-white '
+                    ? 'bg-black/70 text-white '
                     : ''
                 }lg:mt-2 py-2 px-4 lg:w-full rounded-md text-gray-300 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-600 focus-visible:ring-offset-gray-900`}
               >

@@ -1,12 +1,12 @@
 export default interface ISortFn {
-  property: 'createdAt' | 'lastName' | 'birthday' | 'gender' | 'events';
+  property: 'createdAt' | 'lastName' | 'age' | 'gender';
   isDescending: boolean;
 }
 
 export function registrationSort(objectA: any, objectB: any, sortFn: ISortFn) {
   let result;
 
-  if (sortFn.property === 'createdAt' || sortFn.property === 'birthday') {
+  if (sortFn.property === 'createdAt') {
     result = () => {
       if (
         new Date(objectA[sortFn.property]) > new Date(objectB[sortFn.property])
@@ -15,16 +15,6 @@ export function registrationSort(objectA: any, objectB: any, sortFn: ISortFn) {
       } else if (
         new Date(objectA[sortFn.property]) < new Date(objectB[sortFn.property])
       ) {
-        return -1;
-      } else {
-        return 0;
-      }
-    };
-  } else if (sortFn.property === 'events') {
-    result = () => {
-      if (objectA.races[0].name > objectB.races[0].name) {
-        return 1;
-      } else if (objectA.races[0].name < objectB.races[0].name) {
         return -1;
       } else {
         return 0;

@@ -49,7 +49,7 @@ export default function UpdateRegistratoinError({
             rel="noreferrer"
             className="text-sky-700 underline"
           >
-            contact the site maintainer
+            contact the site admin.
           </a>
           .
         </p>

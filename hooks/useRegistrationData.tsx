@@ -26,11 +26,7 @@ type ProviderProps = {
 };
 
 export function RegistrationProvider({ children, data }: ProviderProps) {
-  const [event, setEvent] = React.useState(data);
-
-  const updateEvent = (update: Event) => {
-    setEvent(update);
-  };
+  const [event, updateEvent] = React.useState(data);
 
   return (
     <RegistrationContext.Provider

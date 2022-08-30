@@ -6,7 +6,7 @@ import { withAuth } from '../../utils/auth';
 import database from '../../middleware/db';
 import { event } from '../../db';
 import { ExtendRequest } from '../../interfaces';
-import { formatAge, formatPhoneNumber, formatToMoney } from '../../utils/misc';
+import { formatPhoneNumber, formatToMoney } from '../../utils/misc';
 
 const handler = nc<ExtendRequest, NextApiResponse>()
   .use(database)
@@ -43,12 +43,14 @@ const handler = nc<ExtendRequest, NextApiResponse>()
       id: string;
       raceName: string;
       registrations: any[];
+      raceTotal: number;
     }[];
 
     const accumulator: RaceReducer = fetchedEvent.races.map(r => ({
       id: r.id,
-      raceName: r.name,
+      raceName: `${r.sled} - ${r.category}${r.breed ? ` - ${r.breed}` : null}`,
       registrations: [],
+      raceTotal: 0,
     }));
 
     const raceReducer = registrations.reduce(
@@ -72,7 +74,7 @@ const handler = nc<ExtendRequest, NextApiResponse>()
             city: currentRegistration.city,
             state: currentRegistration.state,
             gender: currentRegistration.gender === 'female' ? 'F' : 'M',
-            age: formatAge(currentRegistration.birthday, fetchedEvent.dates[0]),
+            age: currentRegistration.age,
             guardian: currentRegistration.guardian,
             total: formatToMoney(currentRegistration.summary.total, true),
             stripeFee: formatToMoney(
@@ -87,10 +89,11 @@ const handler = nc<ExtendRequest, NextApiResponse>()
           };
 
           const updatedAccumulator = accumulator.map(a => {
-            if (a.id === r.id) {
+            if (a.id === r) {
               return {
                 ...a,
                 registrations: [...a.registrations, formattedRegistration],
+                raceTotal: a.raceTotal + 1,
               };
             }
             return a;
@@ -104,7 +107,9 @@ const handler = nc<ExtendRequest, NextApiResponse>()
 
     const records = raceReducer.reduce(
       (accumulator: Record<string, unknown>[], currentRace) => {
-        const raceHeaderRow = { [header[0].id]: currentRace.raceName };
+        const raceHeaderRow = {
+          [header[0].id]: `${currentRace.raceName} [${currentRace.raceTotal}]`,
+        };
 
         const sortedRegistrations = currentRace.registrations.sort(
           (regA, regB) => {

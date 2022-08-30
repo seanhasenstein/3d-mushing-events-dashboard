@@ -34,8 +34,7 @@ export async function updateRegistrationMutation(
 }
 
 export function formatRegistrationForDb(
-  formData: UpdateRegistrationFormData,
-  eventDate: string
+  formData: UpdateRegistrationFormData
 ): Registration {
   const subtotal = Number(formData.subtotal) * 100;
   const trailFee = Number(formData.trailFee) * 100;
@@ -46,7 +45,7 @@ export function formatRegistrationForDb(
     if (formData.guardian === null) {
       return null;
     } else {
-      const isRequired = requiresGuardian(formData.birthday, eventDate);
+      const isRequired = requiresGuardian(formData.age);
       return isRequired ? formData.guardian.trim() : null;
     }
   };
@@ -60,7 +59,7 @@ export function formatRegistrationForDb(
     city: formData.city.trim(),
     state: formData.state,
     gender: formData.gender,
-    birthday: new Date(formData.birthday).toISOString(),
+    age: formData.age,
     guardian: formatGuardian(),
     races: formData.races,
     summary: {
@@ -70,6 +69,7 @@ export function formatRegistrationForDb(
       total,
       stripeFee: calculateStripeFee(total),
     },
+    stripeId: formData.stripeId,
     createdAt: formData.createdAt,
     updatedAt: new Date().toISOString(),
   };
@@ -78,7 +78,6 @@ export function formatRegistrationForDb(
 export function formatRegistrationForForm(dbRegistration: Registration) {
   const { summary, ...rest } = dbRegistration;
   const phone = formatPhoneNumber(dbRegistration.phone);
-  const birthday = format(new Date(dbRegistration.birthday), 'yyyy-MM-dd');
   const guardian = dbRegistration.guardian || '';
   const subtotal = (Math.round(dbRegistration.summary.subtotal) / 100).toFixed(
     2
@@ -92,7 +91,6 @@ export function formatRegistrationForForm(dbRegistration: Registration) {
   return {
     ...rest,
     phone,
-    birthday,
     guardian,
     subtotal,
     trailFee,

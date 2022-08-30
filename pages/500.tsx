@@ -25,7 +25,7 @@ export default function FiveHundredError() {
             rel="noreferrer"
             className="text-sky-600 underline"
           >
-            contact the site maintainer
+            contact the site admin.
           </a>
           .
         </p>
